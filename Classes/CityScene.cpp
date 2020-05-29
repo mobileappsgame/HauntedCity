@@ -95,10 +95,15 @@ bool CityScene::init()
     //this->addChild(spikeB);
 
     schedule(schedule_selector(CityScene::update));
-
+    initTouch();
+/*
+    auto contactListener = EventListenerPhysicsContact::create();
+    contactListener->onContactBegin = CC_CALLBACK_1(CityScene::onContactBegan, this);
+    this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(contactListener, this);
+*/
     SpriteFrameCache::getInstance()->addSpriteFramesWithFile("running.plist");
     auto frames = getAnimation("Run__00%d.png", 6);
-    auto sprite3 = Sprite::createWithSpriteFrame(frames.front());
+    sprite3 = Sprite::createWithSpriteFrame(frames.front());
     sprite3->setPosition(Vec2(origin.x + visibleSize.width/3 -3, origin.y + visibleSize.height/3 + 6));
     this->addChild(sprite3);
 
@@ -111,8 +116,30 @@ bool CityScene::init()
 void CityScene::update(float dt)
 {
     city->update(0.1);
-    //boulder->update(0.1);
-    //spikeB->update(0.1);
+}
+
+void CityScene::initTouch()
+{
+    auto listener = EventListenerTouchOneByOne::create();
+    listener -> onTouchBegan = [] (Touch* touch, Event* event) { return true;};
+    listener -> onTouchMoved = CC_CALLBACK_2(CityScene::moveSoldier, this);
+    listener -> onTouchEnded = [=] (Touch* touch, Event* event) {};
+    _eventDispatcher -> addEventListenerWithSceneGraphPriority(listener, this);
+}
+
+void CityScene::moveSoldier(Touch* touch, Event* evento)
+{
+    this->popMole(sprite3);
+}
+
+void CityScene::popMole(CCSprite *mysprite){
+    auto visibleSize = Director::getInstance()->getVisibleSize();
+    Vec2 origin = Director::getInstance()->getVisibleOrigin();
+    CCMoveBy *moveUp = CCMoveBy::create(0.2, Vec2(0, visibleSize.height*0.05));
+    CCEaseInOut *easeMoveUp = CCEaseInOut::create(moveUp, 3.0);
+    CCDelayTime *delay = CCDelayTime::create(0.5);
+    CCAction *easeMoveDown = easeMoveUp->reverse();
+    mysprite->runAction(CCSequence::create(easeMoveUp, delay, easeMoveDown, NULL));
 }
 
 Vector<SpriteFrame*> CityScene::getAnimation(const char *format, int count)
