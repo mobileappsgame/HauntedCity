@@ -4,6 +4,9 @@
 
 #include "CityScene.h"
 #include "SimpleAudioEngine.h"
+#include "cocos2d.h"
+#include "../cocos2d/cocos/math/Vec2.h"
+#include "../cocos2d/cocos/base/CCRef.h"
 
 USING_NS_CC;
 
@@ -81,57 +84,51 @@ bool CityScene::init()
     }
 
 
-    // background layer: another image
-    background1 = Sprite::create("city1.png");
-    // scale the image (optional)
-    background1->setScale( 2.0f );
-    // change the transform anchor point (optional)
-    background1->setAnchorPoint( Vec2(0,0) );
+    // Parallax scrolling layers below with different speed
+    city = ScrollingBg::create("city1.png", 5.0, 0.5, 0.7);
+    this->addChild(city);
 
-    // Add second background
-    // background layer: another image
-    background2 = Sprite::create("city1.png");
-    // scale the image (optional)
-    background2->setScale( 2.0f );
-    // change the transform anchor point (optional)
-    background2->setAnchorPoint( Vec2(0,0) );
-    this->addChild(background1);
-    this->addChild(background2);
-    // create a void node, a parent node
-    //auto voidNode = ParallaxNode::create();
+    //boulder = ScrollingBg::create("boulder.png", 1.5, 0.7, 0.2); // Boulders move faster
+    //this->addChild(boulder);
 
+    //spikeB = ScrollingBg::create("spike B.png", 1.5, 0.3, 0.3); // Spike placed little diff x axis
+    //this->addChild(spikeB);
 
-    //addChild( voidNode );
-    schedule(schedule_selector(CityScene::scroll));
-    srand((unsigned int)time(nullptr));
-    this->schedule(schedule_selector(CityScene::addStones), 3);
+    schedule(schedule_selector(CityScene::update));
+
+    SpriteFrameCache::getInstance()->addSpriteFramesWithFile("running.plist");
+    auto frames = getAnimation("Run__00%d.png", 6);
+    auto sprite3 = Sprite::createWithSpriteFrame(frames.front());
+    sprite3->setPosition(Vec2(origin.x + visibleSize.width/3 -3, origin.y + visibleSize.height/3 + 6));
+    this->addChild(sprite3);
+
+    auto animation = Animation::createWithSpriteFrames(frames, 1.0f/8);
+    sprite3->runAction(RepeatForever::create(Animate::create(animation)));
+
     return true;
 }
 
-// update backgrounds
-void CityScene::scroll(float dt) {
-
-    auto visibleSize = Director::getInstance()->getVisibleSize();
-    Vec2 origin = Director::getInstance()->getVisibleOrigin();
-
-    CCPoint pos1 = background1->getPosition();
-    CCPoint pos2 = background2->getPosition();
-
-    pos1.x -= 3.0f;
-    pos2.x -= 3.0f;
-
-    if(pos1.x <=-(visibleSize.width) )
-    {
-        pos1.x = pos2.x + visibleSize.width;
-    }
-
-    if(pos2.x <=-(visibleSize.width) )
-    {
-        pos2.x = pos1.x + visibleSize.width;
-    }
-    background1->setPosition(pos1);
-    background2->setPosition(pos2);
+void CityScene::update(float dt)
+{
+    city->update(0.1);
+    //boulder->update(0.1);
+    //spikeB->update(0.1);
 }
+
+Vector<SpriteFrame*> CityScene::getAnimation(const char *format, int count)
+{
+    auto spritecache = SpriteFrameCache::getInstance();
+    Vector<SpriteFrame*> animFrames;
+    char str[100];
+    for(int i = 1; i <= count; i++)
+    {
+        sprintf(str, format, i);
+        animFrames.pushBack(spritecache->getSpriteFrameByName(str));
+    }
+    return animFrames;
+}
+
+
 
 void CityScene::addStones(float dt) {
 
