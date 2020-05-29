@@ -50,10 +50,12 @@ endif()
 list(APPEND GAME_SOURCE
      Classes/AppDelegate.cpp
      Classes/CityScene.cpp
+     Classes/ScrollingBg.cpp
      )
 list(APPEND GAME_HEADER
      Classes/AppDelegate.h
      Classes/CityScene.h
+     Classes/ScrollingBg.h
      )
 
 if(ANDROID)
