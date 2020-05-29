@@ -122,17 +122,17 @@ void CityScene::initTouch()
 {
     auto listener = EventListenerTouchOneByOne::create();
     listener -> onTouchBegan = [] (Touch* touch, Event* event) { return true;};
-    listener -> onTouchMoved = CC_CALLBACK_2(CityScene::moveSoldier, this);
+    listener -> onTouchMoved = CC_CALLBACK_2(CityScene::moveSprite, this);
     listener -> onTouchEnded = [=] (Touch* touch, Event* event) {};
     _eventDispatcher -> addEventListenerWithSceneGraphPriority(listener, this);
 }
 
-void CityScene::moveSoldier(Touch* touch, Event* evento)
+void CityScene::moveSprite(Touch* touch, Event* evento)
 {
-    this->popMole(sprite3);
+    this->jumpSprite(sprite3);
 }
 
-void CityScene::popMole(CCSprite *mysprite){
+void CityScene::jumpSprite(CCSprite *mysprite){
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
     CCMoveBy *moveUp = CCMoveBy::create(0.2, Vec2(0, visibleSize.height*0.05));

@@ -26,8 +26,8 @@ public:
     cocos2d::Vector<cocos2d::SpriteFrame*> getAnimation(const char *format, int count);
     void initTouch();
     cocos2d::CCSprite *sprite3;
-    void popMole(cocos2d::CCSprite *mysprite);
-    void moveSoldier(Touch* touch, Event* evento);
+    void jumpSprite(cocos2d::CCSprite *mysprite);
+    void moveSprite(Touch* touch, Event* evento);
 
     // implement the "static create()" method manually
     CREATE_FUNC(CityScene);
