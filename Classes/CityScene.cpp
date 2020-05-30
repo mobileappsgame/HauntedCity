@@ -10,11 +10,21 @@
 
 USING_NS_CC;
 
+enum class PhysicsCategory {
+    None = 0,
+    Boulder = (1 << 0),    // 1
+    Soldier = (1 << 1), // 2
+    All = PhysicsCategory::Boulder | PhysicsCategory::Soldier // 3
+};
+
 Scene* CityScene::createScene()
 {
     //return HelloWorld::create();
     // 'scene' is an autorelease object
-    CCScene *scene = CCScene::create();
+    auto scene = Scene::createWithPhysics();
+    scene->getPhysicsWorld()->setGravity(Vect(0, 0));
+
+    //CCScene *scene = CCScene::create();
 
     // 'layer' is an autorelease object
     CityScene *layer = CityScene::create();
@@ -85,7 +95,7 @@ bool CityScene::init()
 
 
     // Parallax scrolling layers below with different speed
-    city = ScrollingBg::create("city1.png", 5.0, 0.5, 0.7);
+    city = ScrollingBg::create("city1.png", 4.0, 0.5, 0.7);
     this->addChild(city);
 
     //boulder = ScrollingBg::create("boulder.png", 1.5, 0.7, 0.2); // Boulders move faster
@@ -96,6 +106,7 @@ bool CityScene::init()
 
     schedule(schedule_selector(CityScene::update));
     initTouch();
+
 /*
     auto contactListener = EventListenerPhysicsContact::create();
     contactListener->onContactBegin = CC_CALLBACK_1(CityScene::onContactBegan, this);
@@ -105,10 +116,23 @@ bool CityScene::init()
     auto frames = getAnimation("Run__00%d.png", 6);
     sprite3 = Sprite::createWithSpriteFrame(frames.front());
     sprite3->setPosition(Vec2(origin.x + visibleSize.width/3 -3, origin.y + visibleSize.height/3 + 6));
+
+
+    initializePhysics(sprite3);
+    sprite3->getPhysicsBody()->setCategoryBitmask((int)PhysicsCategory::Soldier);
+    sprite3->getPhysicsBody()->setCollisionBitmask((int)PhysicsCategory::None);
+    sprite3->getPhysicsBody()->setContactTestBitmask((int)PhysicsCategory::Boulder);
+
     this->addChild(sprite3);
 
     auto animation = Animation::createWithSpriteFrames(frames, 1.0f/8);
     sprite3->runAction(RepeatForever::create(Animate::create(animation)));
+
+    schedule(schedule_selector(CityScene::addStones), 3);
+
+    auto contactListener = EventListenerPhysicsContact::create();
+    contactListener->onContactBegin = CC_CALLBACK_1(CityScene::onContactBegan, this);
+    this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(contactListener, this);
 
     return true;
 }
@@ -129,7 +153,12 @@ void CityScene::initTouch()
 
 void CityScene::moveSprite(Touch* touch, Event* evento)
 {
-    this->jumpSprite(sprite3);
+    Vec2 touchLocation = touch->getLocation();
+    Vec2 offset = touchLocation - sprite3->getPosition();
+
+    if (offset.y > 0) {
+        this->jumpSprite(sprite3);
+    }
 }
 
 void CityScene::jumpSprite(CCSprite *mysprite){
@@ -156,7 +185,6 @@ Vector<SpriteFrame*> CityScene::getAnimation(const char *format, int count)
 }
 
 
-
 void CityScene::addStones(float dt) {
 
     auto visibleSize = Director::getInstance()->getVisibleSize();
@@ -165,13 +193,17 @@ void CityScene::addStones(float dt) {
     //auto stones = Sprite::create("boulder_1.png");
     int random = (rand() % 30);
     Sprite* stones;
+/*
     if ((random % 4) == 0) {
         stones = Sprite::create("spikeA.png");
     }
     else {
-        stones = Sprite::create("boulder_1.png");
+        stones = Sprite::create("boulder.png");
     }
-
+    */
+    stones = Sprite::create("boulder.png");
+    //stones = (cocos2d::Sprite*) ScrollingBg::create("boulder.png", 4.0, 0.5, 0.7);
+    //this->addChild(stones, 6);
     // 1
     auto monsterContentSize = stones->getContentSize();
     auto selfContentSize = this->getContentSize();
@@ -180,7 +212,14 @@ void CityScene::addStones(float dt) {
     int rangeY = maxY - minY;
     int randomY = (rand() % rangeY) + minY;
 
-    stones->setPosition(Vec2(selfContentSize.width + monsterContentSize.width/2, visibleSize.height/2));
+    stones->setPosition(Vec2(selfContentSize.width + monsterContentSize.width/2, visibleSize.height/3 -1 ));
+    //stones->setPosition(Vec2(origin.x + visibleSize.width/2, origin.y + visibleSize.height/3 + 6));
+
+    initializePhysics(stones);
+    stones->getPhysicsBody()->setCategoryBitmask((int)PhysicsCategory::Boulder);
+    stones->getPhysicsBody()->setCollisionBitmask((int)PhysicsCategory::None);
+    stones->getPhysicsBody()->setContactTestBitmask((int)PhysicsCategory::Soldier);
+
     this->addChild(stones);
 
     // 2
@@ -191,9 +230,45 @@ void CityScene::addStones(float dt) {
 
     // 3
     //auto actionMove = MoveTo::create(randomDuration, Vec2(-monsterContentSize.width/2, visibleSize.height/2));
-    auto actionMove = MoveTo::create(3.0, Vec2(-monsterContentSize.width/2, visibleSize.height/2));
+    auto actionMove = MoveTo::create(3, Vec2(-origin.x, visibleSize.height/3 -1));
     auto actionRemove = RemoveSelf::create();
     stones->runAction(Sequence::create(actionMove,actionRemove, nullptr));
+
+}
+
+bool CityScene::onContactBegan(PhysicsContact &contact) {
+    auto visibleSize = Director::getInstance()->getVisibleSize();
+    Vec2 origin = Director::getInstance()->getVisibleOrigin();
+
+    auto nodeA = contact.getShapeA()->getBody()->getNode();
+    auto nodeB = contact.getShapeB()->getBody()->getNode();
+
+    nodeA->removeFromParent();
+    nodeB->removeFromParent();
+
+    auto label = Label::createWithTTF("Game Over !!", "fonts/Marker Felt.ttf", 24);
+
+    // position the label on the center of the screen
+    label->setPosition(Vec2(origin.x + visibleSize.width/2,
+                                origin.y + visibleSize.height/2));
+
+    // add the label as a child to this layer
+    this->addChild(label, 1);
+
+    //auto scene = GameOverScene::createScene();
+    //Director::getInstance( )->replaceScene( TransitionFade::create( TRANSITION_TIME, scene ) );
+    Director::getInstance()->end();
+    return true;
+}
+
+void CityScene::initializePhysics(Sprite* sprite)
+{
+    auto circle = PhysicsBody::createCircle(sprite -> getContentSize().width/2);
+    //auto circle = PhysicsBody::createBox(Size(100.0f, 100.0f),
+      //                                        PhysicsMaterial(0, 1, 0));
+    circle->setContactTestBitmask(true);
+    circle->setDynamic(true);
+    sprite->setPhysicsBody(circle);
 }
 
 void CityScene::menuCloseCallback(Ref* pSender)

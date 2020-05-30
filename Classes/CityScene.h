@@ -7,7 +7,7 @@
 
 #include "cocos2d.h"
 #include "ScrollingBg.h"
-
+USING_NS_CC;
 class CityScene : public cocos2d::CCLayer
 {
 public:
@@ -28,6 +28,8 @@ public:
     cocos2d::CCSprite *sprite3;
     void jumpSprite(cocos2d::CCSprite *mysprite);
     void moveSprite(Touch* touch, Event* evento);
+    void initializePhysics(cocos2d::Sprite* sprite);
+    bool onContactBegan(cocos2d::PhysicsContact &contact);
 
     // implement the "static create()" method manually
     CREATE_FUNC(CityScene);
