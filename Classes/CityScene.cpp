@@ -79,39 +79,20 @@ bool CityScene::init()
     // create and initialize a label
 
     auto label = Label::createWithTTF("Haunted City", "fonts/Marker Felt.ttf", 24);
-    if (label == nullptr)
-    {
-        problemLoading("'fonts/Marker Felt.ttf'");
-    }
-    else
-    {
-        // position the label on the center of the screen
-        label->setPosition(Vec2(origin.x + visibleSize.width/2,
+    // position the label on the center of the screen
+    label->setPosition(Vec2(origin.x + visibleSize.width/2,
                                 origin.y + visibleSize.height - label->getContentSize().height));
 
-        // add the label as a child to this layer
-        this->addChild(label, 1);
-    }
+    this->addChild(label, 1);
 
 
     // Parallax scrolling layers below with different speed
     city = ScrollingBg::create("city1.png", 4.0, 0.5, 0.7);
     this->addChild(city);
 
-    //boulder = ScrollingBg::create("boulder.png", 1.5, 0.7, 0.2); // Boulders move faster
-    //this->addChild(boulder);
-
-    //spikeB = ScrollingBg::create("spike B.png", 1.5, 0.3, 0.3); // Spike placed little diff x axis
-    //this->addChild(spikeB);
-
     schedule(schedule_selector(CityScene::update));
     initTouch();
 
-/*
-    auto contactListener = EventListenerPhysicsContact::create();
-    contactListener->onContactBegin = CC_CALLBACK_1(CityScene::onContactBegan, this);
-    this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(contactListener, this);
-*/
     SpriteFrameCache::getInstance()->addSpriteFramesWithFile("running.plist");
     auto frames = getAnimation("Run__00%d.png", 6);
     sprite3 = Sprite::createWithSpriteFrame(frames.front());
@@ -190,7 +171,6 @@ void CityScene::addStones(float dt) {
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-    //auto stones = Sprite::create("boulder_1.png");
     int random = (rand() % 30);
     Sprite* stones;
 /*
@@ -202,8 +182,7 @@ void CityScene::addStones(float dt) {
     }
     */
     stones = Sprite::create("boulder.png");
-    //stones = (cocos2d::Sprite*) ScrollingBg::create("boulder.png", 4.0, 0.5, 0.7);
-    //this->addChild(stones, 6);
+
     // 1
     auto monsterContentSize = stones->getContentSize();
     auto selfContentSize = this->getContentSize();
@@ -213,7 +192,6 @@ void CityScene::addStones(float dt) {
     int randomY = (rand() % rangeY) + minY;
 
     stones->setPosition(Vec2(selfContentSize.width + monsterContentSize.width/2, visibleSize.height/3 -1 ));
-    //stones->setPosition(Vec2(origin.x + visibleSize.width/2, origin.y + visibleSize.height/3 + 6));
 
     initializePhysics(stones);
     stones->getPhysicsBody()->setCategoryBitmask((int)PhysicsCategory::Boulder);
