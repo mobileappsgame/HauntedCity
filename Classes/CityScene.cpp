@@ -9,12 +9,14 @@
 #include "../cocos2d/cocos/base/CCRef.h"
 
 USING_NS_CC;
+int CityScene::SCORE = 0; // Initialize static variable
 
 enum class PhysicsCategory {
     None = 0,
     Boulder = (1 << 0),    // 1
-    Soldier = (1 << 1), // 2
-    All = PhysicsCategory::Boulder | PhysicsCategory::Soldier // 3
+    Soldier = (1 << 1),   // 2
+    Jewels = (1 << 2),    //4
+    All = PhysicsCategory::Boulder | PhysicsCategory::Jewels // 5
 };
 
 Scene* CityScene::createScene()
@@ -78,6 +80,15 @@ bool CityScene::init()
     // add a label shows "Hello World"
     // create and initialize a label
 
+    // Scoring section initialization
+    SCORE = 0; // Re-initialize to zero.
+    char text[256];
+    sprintf(text,"SCORE: %d", SCORE);
+    scoreLabel = Label::createWithTTF(text, "fonts/Marker Felt.ttf", 24);
+    scoreLabel->setPosition(Vec2(origin.x + scoreLabel->getContentSize().width,
+                                 origin.y + visibleSize.height - scoreLabel->getContentSize().height));
+    this->addChild(scoreLabel, 2);
+
     auto label = Label::createWithTTF("Haunted City", "fonts/Marker Felt.ttf", 24);
     // position the label on the center of the screen
     label->setPosition(Vec2(origin.x + visibleSize.width/2,
@@ -89,6 +100,7 @@ bool CityScene::init()
     // Parallax scrolling layers below with different speed
     city = ScrollingBg::create("city1.png", 4.0, 0.5, 0.7);
     this->addChild(city);
+
 
     schedule(schedule_selector(CityScene::update));
     initTouch();
@@ -102,7 +114,7 @@ bool CityScene::init()
     initializePhysics(sprite3);
     sprite3->getPhysicsBody()->setCategoryBitmask((int)PhysicsCategory::Soldier);
     sprite3->getPhysicsBody()->setCollisionBitmask((int)PhysicsCategory::None);
-    sprite3->getPhysicsBody()->setContactTestBitmask((int)PhysicsCategory::Boulder);
+    sprite3->getPhysicsBody()->setContactTestBitmask((int)PhysicsCategory::All);
 
     this->addChild(sprite3);
 
@@ -110,6 +122,7 @@ bool CityScene::init()
     sprite3->runAction(RepeatForever::create(Animate::create(animation)));
 
     schedule(schedule_selector(CityScene::addStones), 3);
+    schedule(schedule_selector(CityScene::addJewels), 5);
 
     auto contactListener = EventListenerPhysicsContact::create();
     contactListener->onContactBegin = CC_CALLBACK_1(CityScene::onContactBegan, this);
@@ -150,6 +163,7 @@ void CityScene::jumpSprite(CCSprite *mysprite){
     CCDelayTime *delay = CCDelayTime::create(0.5);
     CCAction *easeMoveDown = easeMoveUp->reverse();
     mysprite->runAction(CCSequence::create(easeMoveUp, delay, easeMoveDown, NULL));
+
 }
 
 Vector<SpriteFrame*> CityScene::getAnimation(const char *format, int count)
@@ -165,6 +179,54 @@ Vector<SpriteFrame*> CityScene::getAnimation(const char *format, int count)
     return animFrames;
 }
 
+void CityScene::addJewels(float dt) {
+
+    auto visibleSize = Director::getInstance()->getVisibleSize();
+    Vec2 origin = Director::getInstance()->getVisibleOrigin();
+
+    int random = (rand() % 30);
+    Sprite* jewels;
+/*
+    if ((random % 4) == 0) {
+        stones = Sprite::create("spikeA.png");
+    }
+    else {
+        stones = Sprite::create("boulder.png");
+    }
+    */
+    jewels = Sprite::create("gold-coin.png");
+
+    // 1
+    auto monsterContentSize = jewels->getContentSize();
+    auto selfContentSize = this->getContentSize();
+    int minY = monsterContentSize.height/2;
+    int maxY = selfContentSize.height - monsterContentSize.height/2;
+    int rangeY = maxY - minY;
+    int randomY = (rand() % rangeY) + minY;
+
+    jewels->setPosition(Vec2(selfContentSize.width + monsterContentSize.width/2, visibleSize.height/4 -1 ));
+
+    initializePhysics(jewels);
+    jewels->getPhysicsBody()->setCategoryBitmask((int)PhysicsCategory::Jewels);
+    jewels->getPhysicsBody()->setCollisionBitmask((int)PhysicsCategory::None);
+    jewels->getPhysicsBody()->setContactTestBitmask((int)PhysicsCategory::Soldier);
+    jewels->getPhysicsBody()->setGravityEnable(false);
+
+    this->addChild(jewels);
+
+    // 2
+    int minDuration = 2.0;
+    int maxDuration = 4.0;
+    int rangeDuration = maxDuration - minDuration;
+    int randomDuration = (rand() % rangeDuration) + minDuration;
+
+    // 3
+    //auto actionMove = MoveTo::create(randomDuration, Vec2(-monsterContentSize.width/2, visibleSize.height/2));
+    auto actionMove = MoveTo::create(2, Vec2(-origin.x, visibleSize.height/3 -1));
+    auto actionRemove = RemoveSelf::create();
+    jewels->runAction(Sequence::create(actionMove,actionRemove, nullptr));
+
+}
 
 void CityScene::addStones(float dt) {
 
@@ -208,7 +270,7 @@ void CityScene::addStones(float dt) {
 
     // 3
     //auto actionMove = MoveTo::create(randomDuration, Vec2(-monsterContentSize.width/2, visibleSize.height/2));
-    auto actionMove = MoveTo::create(3, Vec2(-origin.x, visibleSize.height/3 -1));
+    auto actionMove = MoveTo::create(2, Vec2(-origin.x, visibleSize.height/3 -1));
     auto actionRemove = RemoveSelf::create();
     stones->runAction(Sequence::create(actionMove,actionRemove, nullptr));
 
@@ -218,24 +280,45 @@ bool CityScene::onContactBegan(PhysicsContact &contact) {
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
+    auto bodyA =  contact.getShapeA()->getBody();
+    auto bodyB =  contact.getShapeB()->getBody();
+
     auto nodeA = contact.getShapeA()->getBody()->getNode();
     auto nodeB = contact.getShapeB()->getBody()->getNode();
 
-    nodeA->removeFromParent();
-    nodeB->removeFromParent();
+    if (((bodyA->getCategoryBitmask() == (int) PhysicsCategory::Soldier )
+        && (bodyB->getCategoryBitmask() == (int) PhysicsCategory::Boulder )) ||
+        ((bodyB->getCategoryBitmask() == (int) PhysicsCategory::Soldier )
+     && (bodyA->getCategoryBitmask() == (int) PhysicsCategory::Boulder )))
+        {
+        nodeA->removeFromParent();
+        nodeB->removeFromParent();
+        Director::getInstance()->end();
+        return true;
+    }
 
-    auto label = Label::createWithTTF("Game Over !!", "fonts/Marker Felt.ttf", 24);
-
-    // position the label on the center of the screen
-    label->setPosition(Vec2(origin.x + visibleSize.width/2,
-                                origin.y + visibleSize.height/2));
-
-    // add the label as a child to this layer
-    this->addChild(label, 1);
+    if ((bodyA->getCategoryBitmask() == (int) PhysicsCategory::Soldier )
+        && (bodyB->getCategoryBitmask() == (int) PhysicsCategory::Jewels ))
+    {
+        bodyB->getNode()->removeFromParent();
+        //Director::getInstance()->end();
+        SCORE++; // Score increment
+        scoreLabel->setString("SCORE: " + std::to_string(SCORE));
+        CCLOG("Increment score");
+    }
+    if ((bodyA->getCategoryBitmask() == (int) PhysicsCategory::Jewels )
+     && (bodyB->getCategoryBitmask() == (int) PhysicsCategory::Soldier ))
+    {
+        bodyA->getNode()->removeFromParent();
+        //Director::getInstance()->end();
+        SCORE++; // Score increment
+        scoreLabel->setString("SCORE: " + std::to_string(SCORE));
+        CCLOG("Increment score");
+     }
 
     //auto scene = GameOverScene::createScene();
     //Director::getInstance( )->replaceScene( TransitionFade::create( TRANSITION_TIME, scene ) );
-    Director::getInstance()->end();
+
     return true;
 }
 

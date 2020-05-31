@@ -14,9 +14,10 @@ public:
     static cocos2d::Scene* createScene();
 
     virtual bool init();
-    //cocos2d::Sprite *background1;
-    //cocos2d::Sprite *background2;
     ScrollingBg *city;
+    static int SCORE;
+    cocos2d::Label* scoreLabel;
+
     // a selector callback
     void menuCloseCallback(cocos2d::Ref* pSender);
     //void updatePosition();
@@ -25,11 +26,12 @@ public:
     void addStones(float dt);
     cocos2d::Vector<cocos2d::SpriteFrame*> getAnimation(const char *format, int count);
     void initTouch();
-    cocos2d::CCSprite *sprite3;
+    cocos2d::CCSprite *sprite3, *bould;
     void jumpSprite(cocos2d::CCSprite *mysprite);
     void moveSprite(Touch* touch, Event* evento);
     void initializePhysics(cocos2d::Sprite* sprite);
     bool onContactBegan(cocos2d::PhysicsContact &contact);
+    void addJewels(float dt);
 
     // implement the "static create()" method manually
     CREATE_FUNC(CityScene);
