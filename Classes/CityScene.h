@@ -33,6 +33,7 @@ public:
     bool onContactBegan(cocos2d::PhysicsContact &contact);
     void addJewels(float dt);
     bool generateSpark();
+    void initSounds();
 
     // implement the "static create()" method manually
     CREATE_FUNC(CityScene);

@@ -59,6 +59,9 @@ bool CityScene::init()
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
+    initSounds();
+    CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("game-on.ogg");
+
     /////////////////////////////
     // 2. add a menu item with "X" image, which is clicked to quit the program
     //    you may modify it.
@@ -105,6 +108,11 @@ bool CityScene::init()
     schedule(schedule_selector(CityScene::update));
     initTouch();
 
+
+
+    //CocosDenshion::SimpleAudioEngine::sharedEngine()->pauseBackgroundMusic();
+    //CocosDenshion::SimpleAudioEngine::sharedEngine()->resumeBackgroundMusic();
+
     SpriteFrameCache::getInstance()->addSpriteFramesWithFile("running.plist");
     auto frames = getAnimation("Run__00%d.png", 6);
     sprite3 = Sprite::createWithSpriteFrame(frames.front());
@@ -143,6 +151,15 @@ void CityScene::initTouch()
     listener -> onTouchMoved = CC_CALLBACK_2(CityScene::moveSprite, this);
     listener -> onTouchEnded = [=] (Touch* touch, Event* event) {};
     _eventDispatcher -> addEventListenerWithSceneGraphPriority(listener, this);
+}
+
+void CityScene::initSounds()
+{
+    CocosDenshion::SimpleAudioEngine::sharedEngine()->preloadBackgroundMusic("game-on.ogg");
+    CocosDenshion::SimpleAudioEngine::sharedEngine()->playBackgroundMusic("game-on.ogg",true);
+
+    CocosDenshion::SimpleAudioEngine::sharedEngine()->preloadEffect("collect-coin.ogg");
+    //CocosDenshion::SimpleAudioEngine::sharedEngine()->preloadEffect("game-over.ogg");
 }
 
 void CityScene::moveSprite(Touch* touch, Event* evento)
@@ -305,6 +322,7 @@ bool CityScene::onContactBegan(PhysicsContact &contact) {
         scoreLabel->setString("SCORE: " + std::to_string(SCORE));
         CCLOG("Increment score");
         generateSpark();
+        CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("collect-coin.ogg");
     }
     if ((bodyA->getCategoryBitmask() == (int) PhysicsCategory::Jewels )
      && (bodyB->getCategoryBitmask() == (int) PhysicsCategory::Soldier ))
@@ -314,6 +332,7 @@ bool CityScene::onContactBegan(PhysicsContact &contact) {
         SCORE++; // Score increment
         scoreLabel->setString("SCORE: " + std::to_string(SCORE));
         generateSpark();
+        CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("collect-coin.ogg");
         CCLOG("Increment score");
      }
 
