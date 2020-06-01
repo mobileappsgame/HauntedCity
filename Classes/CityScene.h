@@ -26,12 +26,13 @@ public:
     void addStones(float dt);
     cocos2d::Vector<cocos2d::SpriteFrame*> getAnimation(const char *format, int count);
     void initTouch();
-    cocos2d::CCSprite *sprite3, *bould;
+    cocos2d::CCSprite *sprite3;
     void jumpSprite(cocos2d::CCSprite *mysprite);
     void moveSprite(Touch* touch, Event* evento);
     void initializePhysics(cocos2d::Sprite* sprite);
     bool onContactBegan(cocos2d::PhysicsContact &contact);
     void addJewels(float dt);
+    bool generateSpark();
 
     // implement the "static create()" method manually
     CREATE_FUNC(CityScene);

@@ -210,7 +210,6 @@ void CityScene::addJewels(float dt) {
     jewels->getPhysicsBody()->setCategoryBitmask((int)PhysicsCategory::Jewels);
     jewels->getPhysicsBody()->setCollisionBitmask((int)PhysicsCategory::None);
     jewels->getPhysicsBody()->setContactTestBitmask((int)PhysicsCategory::Soldier);
-    jewels->getPhysicsBody()->setGravityEnable(false);
 
     this->addChild(jewels);
 
@@ -305,6 +304,7 @@ bool CityScene::onContactBegan(PhysicsContact &contact) {
         SCORE++; // Score increment
         scoreLabel->setString("SCORE: " + std::to_string(SCORE));
         CCLOG("Increment score");
+        generateSpark();
     }
     if ((bodyA->getCategoryBitmask() == (int) PhysicsCategory::Jewels )
      && (bodyB->getCategoryBitmask() == (int) PhysicsCategory::Soldier ))
@@ -313,6 +313,7 @@ bool CityScene::onContactBegan(PhysicsContact &contact) {
         //Director::getInstance()->end();
         SCORE++; // Score increment
         scoreLabel->setString("SCORE: " + std::to_string(SCORE));
+        generateSpark();
         CCLOG("Increment score");
      }
 
@@ -332,6 +333,41 @@ void CityScene::initializePhysics(Sprite* sprite)
     sprite->setPhysicsBody(circle);
 }
 
+bool CityScene::generateSpark()
+{
+    // Particle system
+    auto visibleSize = Director::getInstance()->getVisibleSize();
+    Vec2 origin = Director::getInstance()->getVisibleOrigin();
+    //CCParticleSystemQuad* m_emitter = new CCParticleSystemQuad();
+    auto m_emitter = CCParticleFlower::create();
+
+    //m_emitter->setPosition(ccpAdd(sprite3->getPosition(), ccp(sprite3->getContentSize().width/2 ,0 )));
+    m_emitter->setPosition(Vec2(origin.x + visibleSize.width/2,
+                                origin.y + visibleSize.height/2));
+
+    //m_emitter->setStartColor(ccc4f(1.0, 1.0, 1.0, 1.0));
+    //m_emitter->setEndColor(ccc4f(0.0, 0.0, 0.0, 0.0));
+
+    m_emitter->setDuration(1);
+    m_emitter->setTotalParticles(1000);
+    m_emitter->setLife(1);
+    m_emitter->setSpeed(2.0);
+    m_emitter->setSpeedVar(30.0);
+
+    //** gravity
+    //m_emitter->setEmitterMode(kCCParticleModeGravity);
+    //m_emitter->setGravity(ccp(0,90));
+
+    //** mode radius
+    m_emitter->setEmitterMode(kCCParticleModeRadius);
+    m_emitter->setStartRadius(0);
+    m_emitter->setStartRadiusVar(50);
+    m_emitter->setRotatePerSecond(2);
+    m_emitter->setRotatePerSecondVar(5);
+
+    this->addChild(m_emitter, 5);
+    return true;
+}
 void CityScene::menuCloseCallback(Ref* pSender)
 {
     //Close the cocos2d-x game scene and quit the application
