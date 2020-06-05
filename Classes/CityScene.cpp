@@ -237,10 +237,12 @@ void CityScene::addStones(float dt) {
     int random = (rand() % 10);
     Sprite* stones;
 
-    if (SCORE >= 5) {
+    if (SCORE >= 2)
+    {
         if ((random % 3) == 0) {
             stones = Sprite::create("spikeB3.png");
-        } else {
+        }
+        else if ((random % 4) == 0) {
             stones = Sprite::create("boulder.png");
         }
     }
