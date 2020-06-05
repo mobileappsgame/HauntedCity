@@ -205,32 +205,28 @@ void CityScene::addJewels(float dt) {
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-    Sprite* jewels1, *jewels2, *jewels3;
+    Sprite* jewels;
+    jewels = Sprite::create("gold-coin.png");
 
-    //for(int i = 0 ; i < 3 ; i++)
-    {
-        jewels1 = Sprite::create("gold-coin.png");
+    // 1
+    auto monsterContentSize = jewels->getContentSize();
+    auto selfContentSize = this->getContentSize();
 
-        // 1
-        auto monsterContentSize = jewels1->getContentSize();
-        auto selfContentSize = this->getContentSize();
+    jewels->setPosition(Vec2(CCRANDOM_0_1() * 10 * selfContentSize.width + monsterContentSize.width / 2 + 5,
+            visibleSize.height / 4 - 1));
 
-        jewels1->setPosition(Vec2(CCRANDOM_0_1() * 10 * selfContentSize.width + monsterContentSize.width / 2 + 5,
-                                 visibleSize.height / 4 - 1));
+    initializePhysics(jewels);
 
-        initializePhysics(jewels1);
+    jewels->getPhysicsBody()->setCategoryBitmask((int) PhysicsCategory::Jewels);
+    jewels->getPhysicsBody()->setCollisionBitmask((int) PhysicsCategory::None);
+    jewels->getPhysicsBody()->setContactTestBitmask((int) PhysicsCategory::Soldier);
 
-        jewels1->getPhysicsBody()->setCategoryBitmask((int) PhysicsCategory::Jewels);
-        jewels1->getPhysicsBody()->setCollisionBitmask((int) PhysicsCategory::None);
-        jewels1->getPhysicsBody()->setContactTestBitmask((int) PhysicsCategory::Soldier);
+    this->addChild(jewels);
 
-
-        this->addChild(jewels1);
-    }
-        // 3
-        auto actionMove = MoveTo::create(6, Vec2(-origin.x, visibleSize.height / 3 - 1));
-        auto actionRemove = RemoveSelf::create();
-        jewels1->runAction(Sequence::create(actionMove, actionRemove, nullptr));
+    // 3
+    auto actionMove = MoveTo::create(6, Vec2(-origin.x, visibleSize.height / 3 - 1));
+    auto actionRemove = RemoveSelf::create();
+    jewels->runAction(Sequence::create(actionMove, actionRemove, nullptr));
 }
 
 void CityScene::addStones(float dt) {
