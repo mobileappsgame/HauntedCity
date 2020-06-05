@@ -95,7 +95,7 @@ bool CityScene::init()
     auto label = Label::createWithTTF("Haunted City", "fonts/Marker Felt.ttf", 24);
     // position the label on the center of the screen
     label->setPosition(Vec2(origin.x + visibleSize.width/2,
-                                origin.y + visibleSize.height - label->getContentSize().height));
+                            origin.y + visibleSize.height - label->getContentSize().height));
 
     this->addChild(label, 1);
 
@@ -131,6 +131,10 @@ bool CityScene::init()
 
     schedule(schedule_selector(CityScene::addStones), 3);
     schedule(schedule_selector(CityScene::addJewels), 5);
+
+    //schedule(schedule_selector(CityScene::addJewels), 1);
+    //schedule(schedule_selector(CityScene::addJewels), 1);
+    //schedule(schedule_selector(CityScene::addJewels), 1);
 
     auto contactListener = EventListenerPhysicsContact::create();
     contactListener->onContactBegin = CC_CALLBACK_1(CityScene::onContactBegan, this);
@@ -201,47 +205,32 @@ void CityScene::addJewels(float dt) {
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-    int random = (rand() % 30);
-    Sprite* jewels;
-/*
-    if ((random % 4) == 0) {
-        stones = Sprite::create("spikeA.png");
+    Sprite* jewels1, *jewels2, *jewels3;
+
+    //for(int i = 0 ; i < 3 ; i++)
+    {
+        jewels1 = Sprite::create("gold-coin.png");
+
+        // 1
+        auto monsterContentSize = jewels1->getContentSize();
+        auto selfContentSize = this->getContentSize();
+
+        jewels1->setPosition(Vec2(CCRANDOM_0_1() * 10 * selfContentSize.width + monsterContentSize.width / 2 + 5,
+                                 visibleSize.height / 4 - 1));
+
+        initializePhysics(jewels1);
+
+        jewels1->getPhysicsBody()->setCategoryBitmask((int) PhysicsCategory::Jewels);
+        jewels1->getPhysicsBody()->setCollisionBitmask((int) PhysicsCategory::None);
+        jewels1->getPhysicsBody()->setContactTestBitmask((int) PhysicsCategory::Soldier);
+
+
+        this->addChild(jewels1);
     }
-    else {
-        stones = Sprite::create("boulder.png");
-    }
-    */
-    jewels = Sprite::create("gold-coin.png");
-
-    // 1
-    auto monsterContentSize = jewels->getContentSize();
-    auto selfContentSize = this->getContentSize();
-    int minY = monsterContentSize.height/2;
-    int maxY = selfContentSize.height - monsterContentSize.height/2;
-    int rangeY = maxY - minY;
-    int randomY = (rand() % rangeY) + minY;
-
-    jewels->setPosition(Vec2(selfContentSize.width + monsterContentSize.width/2, visibleSize.height/4 -1 ));
-
-    initializePhysics(jewels);
-    jewels->getPhysicsBody()->setCategoryBitmask((int)PhysicsCategory::Jewels);
-    jewels->getPhysicsBody()->setCollisionBitmask((int)PhysicsCategory::None);
-    jewels->getPhysicsBody()->setContactTestBitmask((int)PhysicsCategory::Soldier);
-
-    this->addChild(jewels);
-
-    // 2
-    int minDuration = 2.0;
-    int maxDuration = 4.0;
-    int rangeDuration = maxDuration - minDuration;
-    int randomDuration = (rand() % rangeDuration) + minDuration;
-
-    // 3
-    //auto actionMove = MoveTo::create(randomDuration, Vec2(-monsterContentSize.width/2, visibleSize.height/2));
-    auto actionMove = MoveTo::create(2, Vec2(-origin.x, visibleSize.height/3 -1));
-    auto actionRemove = RemoveSelf::create();
-    jewels->runAction(Sequence::create(actionMove,actionRemove, nullptr));
-
+        // 3
+        auto actionMove = MoveTo::create(6, Vec2(-origin.x, visibleSize.height / 3 - 1));
+        auto actionRemove = RemoveSelf::create();
+        jewels1->runAction(Sequence::create(actionMove, actionRemove, nullptr));
 }
 
 void CityScene::addStones(float dt) {
@@ -249,17 +238,19 @@ void CityScene::addStones(float dt) {
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-    int random = (rand() % 30);
+    int random = (rand() % 10);
     Sprite* stones;
-/*
-    if ((random % 4) == 0) {
-        stones = Sprite::create("spikeA.png");
+
+    if (SCORE >= 5) {
+        if ((random % 3) == 0) {
+            stones = Sprite::create("spikeB3.png");
+        } else {
+            stones = Sprite::create("boulder.png");
+        }
     }
     else {
         stones = Sprite::create("boulder.png");
     }
-    */
-    stones = Sprite::create("boulder.png");
 
     // 1
     auto monsterContentSize = stones->getContentSize();
@@ -286,7 +277,7 @@ void CityScene::addStones(float dt) {
 
     // 3
     //auto actionMove = MoveTo::create(randomDuration, Vec2(-monsterContentSize.width/2, visibleSize.height/2));
-    auto actionMove = MoveTo::create(2, Vec2(-origin.x, visibleSize.height/3 -1));
+    auto actionMove = MoveTo::create(3, Vec2(-origin.x, visibleSize.height/3 -1));
     auto actionRemove = RemoveSelf::create();
     stones->runAction(Sequence::create(actionMove,actionRemove, nullptr));
 
@@ -303,10 +294,10 @@ bool CityScene::onContactBegan(PhysicsContact &contact) {
     auto nodeB = contact.getShapeB()->getBody()->getNode();
 
     if (((bodyA->getCategoryBitmask() == (int) PhysicsCategory::Soldier )
-        && (bodyB->getCategoryBitmask() == (int) PhysicsCategory::Boulder )) ||
+         && (bodyB->getCategoryBitmask() == (int) PhysicsCategory::Boulder )) ||
         ((bodyB->getCategoryBitmask() == (int) PhysicsCategory::Soldier )
-     && (bodyA->getCategoryBitmask() == (int) PhysicsCategory::Boulder )))
-        {
+         && (bodyA->getCategoryBitmask() == (int) PhysicsCategory::Boulder )))
+    {
         nodeA->removeFromParent();
         nodeB->removeFromParent();
         Director::getInstance()->end();
@@ -325,7 +316,7 @@ bool CityScene::onContactBegan(PhysicsContact &contact) {
         CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("collect-coin.ogg");
     }
     if ((bodyA->getCategoryBitmask() == (int) PhysicsCategory::Jewels )
-     && (bodyB->getCategoryBitmask() == (int) PhysicsCategory::Soldier ))
+        && (bodyB->getCategoryBitmask() == (int) PhysicsCategory::Soldier ))
     {
         bodyA->getNode()->removeFromParent();
         //Director::getInstance()->end();
@@ -334,7 +325,7 @@ bool CityScene::onContactBegan(PhysicsContact &contact) {
         generateSpark();
         CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("collect-coin.ogg");
         CCLOG("Increment score");
-     }
+    }
 
     //auto scene = GameOverScene::createScene();
     //Director::getInstance( )->replaceScene( TransitionFade::create( TRANSITION_TIME, scene ) );
@@ -346,7 +337,7 @@ void CityScene::initializePhysics(Sprite* sprite)
 {
     auto circle = PhysicsBody::createCircle(sprite -> getContentSize().width/2);
     //auto circle = PhysicsBody::createBox(Size(100.0f, 100.0f),
-      //                                        PhysicsMaterial(0, 1, 0));
+    //                                        PhysicsMaterial(0, 1, 0));
     circle->setContactTestBitmask(true);
     circle->setDynamic(true);
     sprite->setPhysicsBody(circle);
