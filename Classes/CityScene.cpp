@@ -9,6 +9,7 @@
 #include "../cocos2d/cocos/base/CCRef.h"
 
 USING_NS_CC;
+
 int CityScene::SCORE = 0; // Initialize static variable
 
 enum class PhysicsCategory {
@@ -76,7 +77,7 @@ bool CityScene::init()
     // create menu, it's an autorelease object
     auto menu = Menu::create(closeItem, NULL);
     menu->setPosition(Vec2::ZERO);
-    this->addChild(menu, 1);
+    this->addChild(menu,1);
 
     /////////////////////////////
     // 3. add your codes below...
@@ -88,15 +89,19 @@ bool CityScene::init()
     SCORE = 0; // Re-initialize to zero.
     char text[256];
     sprintf(text,"SCORE: %d", SCORE);
-    scoreLabel = Label::createWithTTF(text, "fonts/Marker Felt.ttf", 24);
+    scoreLabel = Label::createWithTTF(text, "fonts/Marker Felt.ttf", 20);
     scoreLabel->setPosition(Vec2(origin.x + scoreLabel->getContentSize().width,
                                  origin.y + visibleSize.height - scoreLabel->getContentSize().height));
+    scoreLabel->setTextColor(Color4B::BLACK);
+    scoreLabel->enableOutline(Color4B::WHITE);
     this->addChild(scoreLabel, 2);
 
-    auto label = Label::createWithTTF("Haunted City", "fonts/Marker Felt.ttf", 24);
+    auto label = Label::createWithTTF("Haunted City", "fonts/Marker Felt.ttf", 28);
     // position the label on the center of the screen
     label->setPosition(Vec2(origin.x + visibleSize.width/2,
                             origin.y + visibleSize.height - label->getContentSize().height));
+    //label->setTextColor(Color4B::BLACK);
+    //label->enableOutline(Color4B::BLACK);
 
     this->addChild(label, 1);
 
