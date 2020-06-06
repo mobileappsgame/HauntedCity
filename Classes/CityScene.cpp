@@ -17,7 +17,7 @@ enum class PhysicsCategory {
     Soldier = (1 << 1),   // 2
     Jewels = (1 << 2),    //4
     Skull = (1 << 3),
-    All = PhysicsCategory::Boulder | PhysicsCategory::Jewels | Skull// 5
+    All = PhysicsCategory::Boulder | PhysicsCategory::Jewels | PhysicsCategory::Skull// 5
 };
 
 Scene* CityScene::createScene()
@@ -132,11 +132,8 @@ bool CityScene::init()
 
     schedule(schedule_selector(CityScene::addStones), 3);
     schedule(schedule_selector(CityScene::addJewels), 5);
-    schedule(schedule_selector(CityScene::addSkulls), 6.0f);
+    schedule(schedule_selector(CityScene::addSkulls), 6);
 
-    //schedule(schedule_selector(CityScene::addJewels), 1);
-    //schedule(schedule_selector(CityScene::addJewels), 1);
-    //schedule(schedule_selector(CityScene::addJewels), 1);
 
     auto contactListener = EventListenerPhysicsContact::create();
     contactListener->onContactBegin = CC_CALLBACK_1(CityScene::onContactBegan, this);
@@ -162,7 +159,7 @@ void CityScene::initTouch()
 void CityScene::initSounds()
 {
     CocosDenshion::SimpleAudioEngine::sharedEngine()->preloadBackgroundMusic("game-on.ogg");
-    CocosDenshion::SimpleAudioEngine::sharedEngine()->playBackgroundMusic("game-on.ogg",true);
+    //CocosDenshion::SimpleAudioEngine::sharedEngine()->playBackgroundMusic("game-on.ogg",true);
 
     CocosDenshion::SimpleAudioEngine::sharedEngine()->preloadEffect("collect-coin.ogg");
     //CocosDenshion::SimpleAudioEngine::sharedEngine()->preloadEffect("game-over.ogg");
@@ -248,12 +245,12 @@ void CityScene::addStones(float dt) {
     int random = (rand() % 10);
     Sprite* stones;
 
-    if (SCORE >= 2)
+    if (SCORE >= 3)
     {
         if ((random % 3) == 0) {
-            stones = Sprite::create("spikeB3.png");
+            stones = Sprite::create("spikeB1.png");
         }
-        else if ((random % 4) == 0) {
+        else {
             stones = Sprite::create("boulder.png");
         }
     }
@@ -313,8 +310,8 @@ void CityScene::addSkulls(float dt)
         this -> addChild(skull);
 
     }
-    SCORE++; // Score increment
-    scoreLabel->setString("SCORE: " + std::to_string(SCORE));
+    //SCORE++; // Score increment
+    //scoreLabel->setString("SCORE: " + std::to_string(SCORE));
 }
 
 bool CityScene::onContactBegan(PhysicsContact &contact) {
@@ -342,7 +339,7 @@ bool CityScene::onContactBegan(PhysicsContact &contact) {
         ((bodyB->getCategoryBitmask() == (int) PhysicsCategory::Soldier )
          && (bodyA->getCategoryBitmask() == (int) PhysicsCategory::Skull )))
     {
-        SCORE +=10; // Skull hit is a plus - increment bonus score
+        SCORE +=5; // Skull hit is a plus - increment bonus score
         scoreLabel->setString("SCORE: " + std::to_string(SCORE));
         generateSpark();
         CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("collect-coin.ogg");
