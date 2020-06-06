@@ -16,7 +16,8 @@ enum class PhysicsCategory {
     Boulder = (1 << 0),    // 1
     Soldier = (1 << 1),   // 2
     Jewels = (1 << 2),    //4
-    All = PhysicsCategory::Boulder | PhysicsCategory::Jewels // 5
+    Skull = (1 << 3),
+    All = PhysicsCategory::Boulder | PhysicsCategory::Jewels | Skull// 5
 };
 
 Scene* CityScene::createScene()
@@ -131,6 +132,7 @@ bool CityScene::init()
 
     schedule(schedule_selector(CityScene::addStones), 3);
     schedule(schedule_selector(CityScene::addJewels), 5);
+    schedule(schedule_selector(CityScene::addSkulls), 6.0f);
 
     //schedule(schedule_selector(CityScene::addJewels), 1);
     //schedule(schedule_selector(CityScene::addJewels), 1);
@@ -166,6 +168,7 @@ void CityScene::initSounds()
     //CocosDenshion::SimpleAudioEngine::sharedEngine()->preloadEffect("game-over.ogg");
 }
 
+
 void CityScene::moveSprite(Touch* touch, Event* evento)
 {
     Vec2 touchLocation = touch->getLocation();
@@ -174,6 +177,14 @@ void CityScene::moveSprite(Touch* touch, Event* evento)
     if (offset.y > 0) {
         this->jumpSprite(sprite3);
     }
+
+    /* // Moving sprite towards x-axis
+    Vec2 currPosition = touch->getLocation();
+
+    if(sprite3->getBoundingBox().containsPoint(currPosition)){
+        sprite3-> setPositionX(currPosition.x);
+    }*/
+
 }
 
 void CityScene::jumpSprite(CCSprite *mysprite){
@@ -275,10 +286,35 @@ void CityScene::addStones(float dt) {
 
     // 3
     //auto actionMove = MoveTo::create(randomDuration, Vec2(-monsterContentSize.width/2, visibleSize.height/2));
-    auto actionMove = MoveTo::create(3, Vec2(-origin.x, visibleSize.height/3 -1));
+    auto actionMove = MoveTo::create(2, Vec2(-origin.x, visibleSize.height/3 -1));
     auto actionRemove = RemoveSelf::create();
     stones->runAction(Sequence::create(actionMove,actionRemove, nullptr));
 
+}
+
+void CityScene::addSkulls(float dt)
+{
+
+    auto visibleSize = Director::getInstance()->getVisibleSize();
+    Vec2 origin = Director::getInstance()->getVisibleOrigin();
+
+    Sprite* skull = nullptr;
+    //for(int i = 0 ; i < 3 ; i++)
+    {
+        skull = cocos2d::Sprite::create("skull2.png");
+        skull -> setAnchorPoint(cocos2d::Vec2::ZERO);
+        skull -> setPosition(CCRANDOM_0_1() * visibleSize.width , visibleSize.height);
+        initializePhysics(skull);
+        //skull ->getPhysicsBody()->setVelocity(cocos2d::Vec2(10, ( (CCRANDOM_0_1() + 0.02f) * -150) ));
+        skull ->getPhysicsBody()->setVelocity(cocos2d::Vec2(10, -150));
+        skull->getPhysicsBody()->setCategoryBitmask((int)PhysicsCategory::Skull);
+        skull->getPhysicsBody()->setCollisionBitmask((int)PhysicsCategory::None);
+        skull->getPhysicsBody()->setContactTestBitmask((int)PhysicsCategory::Soldier);
+        this -> addChild(skull);
+
+    }
+    SCORE++; // Score increment
+    scoreLabel->setString("SCORE: " + std::to_string(SCORE));
 }
 
 bool CityScene::onContactBegan(PhysicsContact &contact) {
@@ -300,6 +336,16 @@ bool CityScene::onContactBegan(PhysicsContact &contact) {
         nodeB->removeFromParent();
         Director::getInstance()->end();
         return true;
+    }
+    if (((bodyA->getCategoryBitmask() == (int) PhysicsCategory::Skull )
+         && (bodyB->getCategoryBitmask() == (int) PhysicsCategory::Soldier )) ||
+        ((bodyB->getCategoryBitmask() == (int) PhysicsCategory::Soldier )
+         && (bodyA->getCategoryBitmask() == (int) PhysicsCategory::Skull )))
+    {
+        SCORE +=10; // Skull hit is a plus - increment bonus score
+        scoreLabel->setString("SCORE: " + std::to_string(SCORE));
+        generateSpark();
+        CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("collect-coin.ogg");
     }
 
     if ((bodyA->getCategoryBitmask() == (int) PhysicsCategory::Soldier )

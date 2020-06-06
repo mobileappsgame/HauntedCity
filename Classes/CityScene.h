@@ -34,6 +34,7 @@ public:
     void addJewels(float dt);
     bool generateSpark();
     void initSounds();
+    void addSkulls(float dt);
 
     // implement the "static create()" method manually
     CREATE_FUNC(CityScene);
