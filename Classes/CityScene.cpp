@@ -341,7 +341,7 @@ bool CityScene::onContactBegan(PhysicsContact &contact) {
         nodeB->removeFromParent();
 
         auto scene = GameOverScene::createScene();
-        CocosDenshion::SimpleAudioEngine::sharedEngine()->stopBackgroundMusic();
+        //CocosDenshion::SimpleAudioEngine::sharedEngine()->stopBackgroundMusic(true);
         Director::getInstance( )->replaceScene( TransitionFade::create( TRANSITION_TIME, scene ) );
         //Director::getInstance()->end();
         return true;

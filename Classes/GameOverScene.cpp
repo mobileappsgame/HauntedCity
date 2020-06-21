@@ -4,6 +4,8 @@
 
 #include "GameOverScene.h"
 #include "CityScene.h"
+#include "SimpleAudioEngine.h"
+
 #define TRANSITION_TIME 0.5
 
 int GameOverScene::highestScore = 0; // Initialize static variable
@@ -28,6 +30,9 @@ bool GameOverScene::init() {
 
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
+
+    //CocosDenshion::SimpleAudioEngine::sharedEngine()->preloadBackgroundMusic("running.ogg");
+    CocosDenshion::SimpleAudioEngine::sharedEngine()->playBackgroundMusic("game-on.ogg",true);
 
     // add a "close" icon to exit the progress. it's an autorelease object
     auto closeItem = MenuItemImage::create(
@@ -75,6 +80,7 @@ bool GameOverScene::init() {
 
 void GameOverScene::GoToGameScene( cocos2d::Ref *sender )
 {
+    CocosDenshion::SimpleAudioEngine::sharedEngine()->stopBackgroundMusic();
     auto scene = CityScene::createScene();
     Director::getInstance( )->replaceScene( TransitionFade::create( TRANSITION_TIME, scene ) );
 }
