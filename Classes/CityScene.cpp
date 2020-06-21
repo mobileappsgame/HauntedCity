@@ -3,10 +3,13 @@
 //
 
 #include "CityScene.h"
+#include "GameOverScene.h"
 #include "SimpleAudioEngine.h"
 #include "cocos2d.h"
 #include "../cocos2d/cocos/math/Vec2.h"
 #include "../cocos2d/cocos/base/CCRef.h"
+
+#define TRANSITION_TIME 0.5
 
 USING_NS_CC;
 
@@ -62,7 +65,7 @@ bool CityScene::init()
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
     initSounds();
-    CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("game-on.ogg");
+    CocosDenshion::SimpleAudioEngine::sharedEngine()->playBackgroundMusic("running.ogg", true);
 
     /////////////////////////////
     // 2. add a menu item with "X" image, which is clicked to quit the program
@@ -163,7 +166,7 @@ void CityScene::initTouch()
 
 void CityScene::initSounds()
 {
-    CocosDenshion::SimpleAudioEngine::sharedEngine()->preloadBackgroundMusic("game-on.ogg");
+    CocosDenshion::SimpleAudioEngine::sharedEngine()->preloadBackgroundMusic("running.ogg");
     //CocosDenshion::SimpleAudioEngine::sharedEngine()->playBackgroundMusic("game-on.ogg",true);
 
     CocosDenshion::SimpleAudioEngine::sharedEngine()->preloadEffect("collect-coin.ogg");
@@ -336,7 +339,11 @@ bool CityScene::onContactBegan(PhysicsContact &contact) {
     {
         nodeA->removeFromParent();
         nodeB->removeFromParent();
-        Director::getInstance()->end();
+
+        auto scene = GameOverScene::createScene();
+        CocosDenshion::SimpleAudioEngine::sharedEngine()->stopBackgroundMusic();
+        Director::getInstance( )->replaceScene( TransitionFade::create( TRANSITION_TIME, scene ) );
+        //Director::getInstance()->end();
         return true;
     }
     if (((bodyA->getCategoryBitmask() == (int) PhysicsCategory::Skull )
