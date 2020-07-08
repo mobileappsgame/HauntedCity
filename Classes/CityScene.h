@@ -1,5 +1,5 @@
 //
-// Created by rsanpui on 5/24/2020.
+// Created by RSANPUI on 7/7/2020.
 //
 
 #ifndef PROJ_ANDROID_CITYSCENE_H
@@ -39,4 +39,5 @@ public:
     // implement the "static create()" method manually
     CREATE_FUNC(CityScene);
 };
+
 #endif //PROJ_ANDROID_CITYSCENE_H

@@ -1,6 +1,5 @@
-
 //
-// Created by rsanpui on 5/25/2020.
+// Created by RSANPUI on 7/7/2020.
 //
 
 #include "ScrollingBg.h"

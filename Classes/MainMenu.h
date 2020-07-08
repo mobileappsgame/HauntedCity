@@ -1,10 +1,12 @@
 //
-// Created by rsanpui on 6/12/2020.
+// Created by RSANPUI on 7/7/2020.
 //
 
 #ifndef PROJ_ANDROID_MAINMENU_H
 #define PROJ_ANDROID_MAINMENU_H
+
 #include "cocos2d.h"
+USING_NS_CC;
 
 class MainMenu : public cocos2d::Layer {
 
@@ -15,6 +17,5 @@ public:
     CREATE_FUNC(MainMenu);
     void GoToGameScene( cocos2d::Ref *sender );
 };
-
 
 #endif //PROJ_ANDROID_MAINMENU_H

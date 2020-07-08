@@ -1,4 +1,10 @@
 //
+// Created by RSANPUI on 7/7/2020.
+//
+
+#include "CityScene.h"
+
+//
 // Created by rsanpui on 5/24/2020.
 //
 
@@ -125,7 +131,7 @@ bool CityScene::init()
     SpriteFrameCache::getInstance()->addSpriteFramesWithFile("running.plist");
     auto frames = getAnimation("Run__00%d.png", 6);
     sprite3 = Sprite::createWithSpriteFrame(frames.front());
-    sprite3->setPosition(Vec2(origin.x + visibleSize.width/3 -3, origin.y + visibleSize.height/3 + 6));
+    sprite3->setPosition(Vec2(origin.x + visibleSize.width/3 -3, origin.y + visibleSize.height/3 -3));
 
 
     initializePhysics(sprite3);
@@ -185,7 +191,6 @@ void CityScene::moveSprite(Touch* touch, Event* evento)
 
     /* // Moving sprite towards x-axis
     Vec2 currPosition = touch->getLocation();
-
     if(sprite3->getBoundingBox().containsPoint(currPosition)){
         sprite3-> setPositionX(currPosition.x);
     }*/
@@ -229,7 +234,7 @@ void CityScene::addJewels(float dt) {
     auto selfContentSize = this->getContentSize();
 
     jewels->setPosition(Vec2(CCRANDOM_0_1() * 10 * selfContentSize.width + monsterContentSize.width / 2 + 5,
-            visibleSize.height / 4 - 1));
+                             visibleSize.height / 4 - 1));
 
     initializePhysics(jewels);
 
@@ -373,7 +378,7 @@ bool CityScene::onContactBegan(PhysicsContact &contact) {
     {
         bodyA->getNode()->removeFromParent();
         //Director::getInstance()->end();
-        SCORE++; // Score increment
+        SCORE+=10; // Score increment
         scoreLabel->setString("SCORE: " + std::to_string(SCORE));
         generateSpark();
         CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("collect-coin.ogg");

@@ -1,9 +1,10 @@
 //
-// Created by rsanpui on 5/29/2020.
+// Created by RSANPUI on 7/7/2020.
 //
 
 #ifndef PROJ_ANDROID_SCROLLINGBG_H
 #define PROJ_ANDROID_SCROLLINGBG_H
+
 #include <iostream>
 #include "cocos2d.h"
 
@@ -25,6 +26,5 @@ public:
 
     void update(float dt);
 };
-
 
 #endif //PROJ_ANDROID_SCROLLINGBG_H
