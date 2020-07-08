@@ -51,11 +51,15 @@ list(APPEND GAME_SOURCE
      Classes/AppDelegate.cpp
      Classes/CityScene.cpp
      Classes/ScrollingBg.cpp
+     Classes/MainMenu.cpp
+     Classes/GameOverScene.cpp
      )
 list(APPEND GAME_HEADER
      Classes/AppDelegate.h
      Classes/CityScene.h
      Classes/ScrollingBg.h
+     Classes/MainMenu.h
+     Classes/GameOverScene.h
      )
 
 if(ANDROID)
