@@ -59,9 +59,12 @@ bool GameOverScene::init() {
     auto playItem = MenuItemImage::create( "Play.png", "CloseNormal.png", CC_CALLBACK_1( GameOverScene::GoToGameScene, this ) );
     playItem->setPosition( Vec2( visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y ) );
 
+    auto userdefaults = cocos2d::UserDefault::getInstance();
+    highestScore = userdefaults->getIntegerForKey("highestScore");
     if (CityScene::SCORE > highestScore)
     {
         highestScore = CityScene::SCORE;
+        userdefaults->setIntegerForKey("highestScore", highestScore);
     }
     char text[256];
     sprintf(text,"Score: %d, Highest Score: %d",CityScene::SCORE, highestScore);
