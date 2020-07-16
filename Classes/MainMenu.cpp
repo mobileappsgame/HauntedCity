@@ -3,7 +3,7 @@
 //
 
 #include "MainMenu.h"
-#include "CityScene.h"
+#include "LevelSetter.h"
 
 #define TRANSITION_TIME 0.5
 #include "../cocos2d/cocos/deprecated/CCDeprecated.h"
@@ -52,7 +52,7 @@ bool MainMenu::init() {
     this->addChild(backgroundSprite, 0);
 
     // Play menu
-    auto playItem = MenuItemImage::create( "Play.png", "CloseNormal.png", CC_CALLBACK_1( MainMenu::GoToGameScene, this ) );
+    auto playItem = MenuItemImage::create( "Play.png", "CloseNormal.png", CC_CALLBACK_1( MainMenu::GoToLevelSetter, this ) );
     playItem->setPosition( Vec2( visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y ) );
 
     auto menuPlay = Menu::create( playItem, NULL );
@@ -72,8 +72,8 @@ void MainMenu::menuCloseCallback(CCObject* pSender)
 #endif
 }
 
-void MainMenu::GoToGameScene( cocos2d::Ref *sender )
+void MainMenu::GoToLevelSetter( cocos2d::Ref *sender )
 {
-    auto scene = CityScene::createScene();
+    auto scene = LevelSetter::createScene();
     Director::getInstance( )->replaceScene( TransitionFade::create( TRANSITION_TIME, scene ) );
 }
