@@ -9,6 +9,9 @@
 #define TRANSITION_TIME 0.5
 
 int GameOverScene::highestScore = 0; // Initialize static variable
+int GameOverScene::highestLevel = 1; // Initialize static variable
+int GameOverScene::currentLevel = 1; // Initialize static variable
+
 USING_NS_CC;
 
 Scene* GameOverScene::createScene()
@@ -60,12 +63,14 @@ bool GameOverScene::init() {
     playItem->setPosition( Vec2( visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y ) );
 
     auto userdefaults = cocos2d::UserDefault::getInstance();
+    highestLevel = userdefaults->getIntegerForKey("highestLevel");
     highestScore = userdefaults->getIntegerForKey("highestScore");
     if (CityScene::SCORE > highestScore)
     {
         highestScore = CityScene::SCORE;
         userdefaults->setIntegerForKey("highestScore", highestScore);
     }
+
     char text[256];
     sprintf(text,"Score: %d, Highest Score: %d",CityScene::SCORE, highestScore);
     auto scoreLabel = Label::createWithTTF(text, "fonts/Marker Felt.ttf", 24);

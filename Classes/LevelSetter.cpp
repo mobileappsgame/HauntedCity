@@ -6,6 +6,7 @@
 #include "SimpleAudioEngine.h"
 #include "CityScene.h"
 #include "LevelSetter.h"
+#include "GameOverScene.h"
 #define TRANSITION_TIME 0.5
 
 USING_NS_CC;
@@ -80,7 +81,13 @@ bool LevelSetter::init()
     //auto userdefaults = cocos2d::UserDefault::getInstance();
     //maxlevel = userdefaults->getIntegerForKey("maxlevel");
 
-    LevelSetter::maxlevel = 13; // This is the max level the player has cleared.
+    auto userdefaults = cocos2d::UserDefault::getInstance();
+    //LevelSetter::maxlevel  This is the max level the player has cleared.
+    LevelSetter::maxlevel = 1;
+    if (LevelSetter::maxlevel < userdefaults->getIntegerForKey("highestLevel"))
+    {
+        LevelSetter::maxlevel = userdefaults->getIntegerForKey("highestLevel");
+    }
 
     // Menu 1 button
     CCMenuItemImage* playItem1 = createMenuItem(1, LevelSetter::maxlevel);
@@ -222,9 +229,63 @@ void LevelSetter::setGameLevel(CCObject* pSender)
     {
         case 1:
             CCLOG("***************** Setting game level = 1 *****************************");
+            GameOverScene::currentLevel = 1;
+            GoToGameScene( this );
             break;
         case 2:
             CCLOG("****************** Setting game level = 2 *****************************");
+            GameOverScene::currentLevel = 2;
+            GoToGameScene( this );
+            break;
+        case 3:
+            CCLOG("***************** Setting game level = 1 *****************************");
+            GameOverScene::currentLevel = 3;
+            GoToGameScene( this );
+            break;
+        case 4:
+            CCLOG("****************** Setting game level = 2 *****************************");
+            GameOverScene::currentLevel = 4;
+            GoToGameScene( this );
+            break;
+        case 5:
+            CCLOG("***************** Setting game level = 1 *****************************");
+            GameOverScene::currentLevel = 5;
+            GoToGameScene( this );
+            break;
+        case 6:
+            CCLOG("****************** Setting game level = 2 *****************************");
+            GameOverScene::currentLevel = 6;
+            GoToGameScene( this );
+            break;
+        case 7:
+            CCLOG("***************** Setting game level = 1 *****************************");
+            GameOverScene::currentLevel = 7;
+            GoToGameScene( this );
+            break;
+        case 8:
+            CCLOG("****************** Setting game level = 2 *****************************");
+            GameOverScene::currentLevel = 8;
+            GoToGameScene( this );
+            break;
+        case 9:
+            CCLOG("***************** Setting game level = 1 *****************************");
+            GameOverScene::currentLevel = 9;
+            GoToGameScene( this );
+            break;
+        case 10:
+            CCLOG("****************** Setting game level = 2 *****************************");
+            GameOverScene::currentLevel = 10;
+            GoToGameScene( this );
+            break;
+        case 11:
+            CCLOG("***************** Setting game level = 1 *****************************");
+            GameOverScene::currentLevel = 11;
+            GoToGameScene( this );
+            break;
+        case 12:
+            CCLOG("****************** Setting game level = 2 *****************************");
+            GameOverScene::currentLevel = 12;
+            GoToGameScene( this );
             break;
         default:
             CCLOG("******************* Setting to default level = 0 ***************************");
@@ -248,6 +309,6 @@ void LevelSetter::menuCloseCallback(Ref* pSender)
 
 void LevelSetter::GoToGameScene( cocos2d::Ref *sender )
 {
-    //auto scene = CityScene::createScene();
-    //Director::getInstance( )->replaceScene( TransitionFade::create( TRANSITION_TIME, scene ) );
+    auto scene = CityScene::createScene();
+    Director::getInstance( )->replaceScene( TransitionFade::create( TRANSITION_TIME, scene ) );
 }
