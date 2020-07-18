@@ -12,6 +12,7 @@
 #include "SimpleAudioEngine.h"
 #include "CityScene.h"
 #include "GameOverScene.h"
+#include "LevelSetter.h"
 
 #define TRANSITION_TIME 0.5
 
@@ -79,7 +80,7 @@ bool LevelClearedMenu::init() {
 
 
     // Settings menu
-    auto settingsItem = MenuItemImage::create( "level-select/settings-level.png", "CloseNormal.png", CC_CALLBACK_1( LevelClearedMenu::GoToGameScene, this ) );
+    auto settingsItem = MenuItemImage::create( "level-select/settings-level.png", "CloseNormal.png", CC_CALLBACK_1( LevelClearedMenu::GoToLevelSetter, this ) );
     settingsItem->setPosition( Vec2( origin.x + 165, visibleSize.height/2 + origin.y -108 ) );
 
     auto settingsPlay = Menu::create( settingsItem, NULL );
@@ -95,7 +96,7 @@ bool LevelClearedMenu::init() {
     this->addChild( retryLevelPlay, 2 );
 
     // Jump to next cleared level
-    auto nextLevelItem = MenuItemImage::create( "level-select/next-level.png", "CloseNormal.png", CC_CALLBACK_1( LevelClearedMenu::GoToGameScene, this ) );
+    auto nextLevelItem = MenuItemImage::create( "level-select/next-level.png", "CloseNormal.png", CC_CALLBACK_1( LevelClearedMenu::GoToNextLevel, this ) );
     nextLevelItem->setPosition( Vec2( origin.x + 165 + settingsItem->getContentSize().width + 20 + retryLevelItem->getContentSize().width + 12, visibleSize.height/2 + origin.y -108 ) );
     nextLevelItem->setScale(0.7);
     auto nextLevelPlay = Menu::create( nextLevelItem, NULL );
@@ -122,6 +123,21 @@ void LevelClearedMenu::GoToGameScene( cocos2d::Ref *sender )
     auto scene = CityScene::createScene();
     Director::getInstance( )->replaceScene( TransitionFade::create( TRANSITION_TIME, scene ) );
 }
+
+void LevelClearedMenu::GoToLevelSetter( cocos2d::Ref *sender )
+{
+    CocosDenshion::SimpleAudioEngine::sharedEngine()->stopBackgroundMusic();
+    auto scene = LevelSetter::createScene();
+    Director::getInstance( )->replaceScene( TransitionFade::create( TRANSITION_TIME, scene ) );
+}
+
+void LevelClearedMenu::GoToNextLevel( cocos2d::Ref *sender )
+{
+    CocosDenshion::SimpleAudioEngine::sharedEngine()->stopBackgroundMusic();
+    auto scene = CityScene::createScene();
+    Director::getInstance( )->replaceScene( TransitionFade::create( TRANSITION_TIME, scene ) );
+}
+
 
 void LevelClearedMenu::menuCloseCallback(CCObject* pSender)
 {

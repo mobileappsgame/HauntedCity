@@ -86,7 +86,8 @@ bool LevelSetter::init()
     LevelSetter::maxlevel = 1;
     if (LevelSetter::maxlevel < userdefaults->getIntegerForKey("highestLevel"))
     {
-        LevelSetter::maxlevel = userdefaults->getIntegerForKey("highestLevel");
+        GameOverScene::highestLevel = userdefaults->getIntegerForKey("highestLevel");
+        LevelSetter::maxlevel = GameOverScene::highestLevel;
     }
 
     // Menu 1 button
@@ -204,9 +205,9 @@ CCMenuItemImage* LevelSetter::createMenuItem(int menulevel, int maxlevel)
 
     CCMenuItemImage* playItem;
 
-    if (menulevel <= LevelSetter::maxlevel)
+    if (menulevel <= maxlevel)
     {
-        playItem = MenuItemImage::create( image, image, CC_CALLBACK_1( LevelSetter::setGameLevel, this ) );
+        playItem = MenuItemImage::create( image, "CloseNormal.png", CC_CALLBACK_1( LevelSetter::setGameLevel, this ) );
     }
     else {
         playItem = MenuItemImage::create( "level-select/lock.png", "lock.png", CC_CALLBACK_1( LevelSetter::setGameLevel, this ) );

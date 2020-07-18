@@ -24,6 +24,8 @@ public:
     void menuCloseCallback(cocos2d::Ref* pSender);
     void setGameLevel(cocos2d::CCObject* pSender);
     cocos2d::CCMenuItemImage* createMenuItem(int menulevel, int maxlevel);
+    void GoToLevelSetter( cocos2d::Ref *sender );
+    void GoToNextLevel( cocos2d::Ref *sender );
     void GoToGameScene( cocos2d::Ref *sender );
     const int kTagPlaygame = 1;
     const int kTagOptions = 2;
