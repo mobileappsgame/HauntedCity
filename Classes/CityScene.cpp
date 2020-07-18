@@ -10,8 +10,9 @@
 
 #include "CityScene.h"
 #include "GameOverScene.h"
-#include "SimpleAudioEngine.h"
-#include "cocos2d.h"
+#include "../cocos2d/cocos/audio/include/SimpleAudioEngine.h"
+#include "../cocos2d/cocos/cocos2d.h"
+#include "LevelClearedMenu.h"
 #include "../cocos2d/cocos/math/Vec2.h"
 #include "../cocos2d/cocos/base/CCRef.h"
 
@@ -300,6 +301,12 @@ void CityScene::addStones(float dt) {
     auto actionRemove = RemoveSelf::create();
     stones->runAction(Sequence::create(actionMove,actionRemove, nullptr));
 
+    if (SCORE > 1)
+    {
+        auto scene = LevelClearedMenu::createScene();
+        Director::getInstance( )->replaceScene( TransitionFade::create( TRANSITION_TIME, scene ) );
+    }
+
 }
 
 void CityScene::addSkulls(float dt)
@@ -372,6 +379,8 @@ bool CityScene::onContactBegan(PhysicsContact &contact) {
         CCLOG("Increment score");
         generateSpark();
         CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("collect-coin.ogg");
+
+
     }
     if ((bodyA->getCategoryBitmask() == (int) PhysicsCategory::Jewels )
         && (bodyB->getCategoryBitmask() == (int) PhysicsCategory::Soldier ))
