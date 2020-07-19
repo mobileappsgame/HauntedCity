@@ -18,6 +18,9 @@ public:
     static int SCORE;
     cocos2d::Label* scoreLabel;
 
+    // At each level you need to collect a certain number of coins to clear that level
+    int coinsCollected;
+
     // a selector callback
     void menuCloseCallback(cocos2d::Ref* pSender);
     //void updatePosition();

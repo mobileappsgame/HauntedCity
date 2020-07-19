@@ -62,19 +62,23 @@ bool LevelClearedMenu::init() {
                                   origin.y + visibleSize.height / 2);
     this->addChild(backgroundSprite, 0);
 
-    GameOverScene::currentLevel +=1;
     auto userdefaults = cocos2d::UserDefault::getInstance();
-    if (GameOverScene::currentLevel > GameOverScene::highestLevel)
-    {
-        GameOverScene::highestLevel +=1;
+    if (GameOverScene::currentLevel < 12) { // Check-point to see we dont over-cross max level while incrementing
+        GameOverScene::currentLevel +=1;
+        //auto userdefaults = cocos2d::UserDefault::getInstance();
+        if (GameOverScene::currentLevel > GameOverScene::highestLevel)
+        {
+            GameOverScene::highestLevel +=1;
 
-        userdefaults->setIntegerForKey("highestLevel", GameOverScene::highestLevel);
+            userdefaults->setIntegerForKey("highestLevel", GameOverScene::highestLevel);
+        }
     }
 
     auto highestScore = userdefaults->getIntegerForKey("highestScore");
     if (CityScene::SCORE > GameOverScene::highestScore)
     {
         GameOverScene::highestScore = CityScene::SCORE;
+        //auto userdefaults = cocos2d::UserDefault::getInstance();
         userdefaults->setIntegerForKey("highestScore", highestScore);
     }
 
@@ -88,7 +92,7 @@ bool LevelClearedMenu::init() {
     this->addChild( settingsPlay, 2 );
 
     // Re-try menu at same level
-    auto retryLevelItem = MenuItemImage::create( "level-select/retry-level.png", "CloseNormal.png", CC_CALLBACK_1( LevelClearedMenu::GoToGameScene, this ) );
+    auto retryLevelItem = MenuItemImage::create( "level-select/retry-level.png", "CloseNormal.png", CC_CALLBACK_1( LevelClearedMenu::RetrySameLevel, this ) );
     retryLevelItem->setPosition( Vec2( origin.x + 165 + settingsItem->getContentSize().width + 20, visibleSize.height/2 + origin.y -108 ) );
 
     auto retryLevelPlay = Menu::create( retryLevelItem, NULL );
@@ -117,8 +121,12 @@ bool LevelClearedMenu::init() {
     return true;
 }
 
-void LevelClearedMenu::GoToGameScene( cocos2d::Ref *sender )
+void LevelClearedMenu::RetrySameLevel( cocos2d::Ref *sender )
 {
+    if (GameOverScene::currentLevel != 12) {
+        GameOverScene::currentLevel -=1; // 12 is max-level, if someone re-tries same level, dont make them go to 11.
+    }
+
     CocosDenshion::SimpleAudioEngine::sharedEngine()->stopBackgroundMusic();
     auto scene = CityScene::createScene();
     Director::getInstance( )->replaceScene( TransitionFade::create( TRANSITION_TIME, scene ) );

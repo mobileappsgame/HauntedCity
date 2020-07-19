@@ -26,7 +26,7 @@ public:
     cocos2d::CCMenuItemImage* createMenuItem(int menulevel, int maxlevel);
     void GoToLevelSetter( cocos2d::Ref *sender );
     void GoToNextLevel( cocos2d::Ref *sender );
-    void GoToGameScene( cocos2d::Ref *sender );
+    void RetrySameLevel( cocos2d::Ref *sender );
     const int kTagPlaygame = 1;
     const int kTagOptions = 2;
 

@@ -38,8 +38,6 @@ Scene* CityScene::createScene()
     auto scene = Scene::createWithPhysics();
     scene->getPhysicsWorld()->setGravity(Vect(0, 0));
 
-    //CCScene *scene = CCScene::create();
-
     // 'layer' is an autorelease object
     CityScene *layer = CityScene::create();
 
@@ -96,7 +94,7 @@ bool CityScene::init()
     // create and initialize a label
 
     // Scoring section initialization
-    SCORE = 0; // Re-initialize to zero.
+    //SCORE = GameOverScene::; // Re-initialize to zero.
     char text[256];
     sprintf(text,"SCORE: %d", SCORE);
     scoreLabel = Label::createWithTTF(text, "fonts/Marker Felt.ttf", 20);
@@ -114,6 +112,15 @@ bool CityScene::init()
     //label->enableOutline(Color4B::BLACK);
 
     this->addChild(label, 1);
+
+    char textlevel[256];
+    sprintf(textlevel,"LEVEL: %d", GameOverScene::currentLevel);
+    auto gameLevel = Label::createWithTTF(textlevel, "fonts/Marker Felt.ttf", 20);
+    gameLevel->setPosition(Vec2(origin.x + visibleSize.width/2 + label->getContentSize().width,
+                                 origin.y + visibleSize.height - scoreLabel->getContentSize().height));
+    gameLevel->setTextColor(Color4B::BLACK);
+    gameLevel->enableOutline(Color4B::WHITE);
+    this->addChild(gameLevel, 2);
 
 
     // Parallax scrolling layers below with different speed
@@ -145,6 +152,8 @@ bool CityScene::init()
     auto animation = Animation::createWithSpriteFrames(frames, 1.0f/8);
     sprite3->runAction(RepeatForever::create(Animate::create(animation)));
 
+    coinsCollected = 0; // Re-initialize. Certain number to be collected to clear each level
+
     schedule(schedule_selector(CityScene::addStones), 3);
     schedule(schedule_selector(CityScene::addJewels), 5);
     schedule(schedule_selector(CityScene::addSkulls), 6);
@@ -160,6 +169,13 @@ bool CityScene::init()
 void CityScene::update(float dt)
 {
     city->update(0.1);
+    if (coinsCollected == 3) // Certain number of coins to be collected to clear each level
+    {
+        coinsCollected = 0; // Re-set counter. Not required actually, since we are doing it at entry.
+        auto scene = LevelClearedMenu::createScene();
+        Director::getInstance( )->replaceScene( TransitionFade::create( TRANSITION_TIME, scene ) );
+    }
+
 }
 
 void CityScene::initTouch()
@@ -301,12 +317,6 @@ void CityScene::addStones(float dt) {
     auto actionRemove = RemoveSelf::create();
     stones->runAction(Sequence::create(actionMove,actionRemove, nullptr));
 
-    if (SCORE > 1)
-    {
-        auto scene = LevelClearedMenu::createScene();
-        Director::getInstance( )->replaceScene( TransitionFade::create( TRANSITION_TIME, scene ) );
-    }
-
 }
 
 void CityScene::addSkulls(float dt)
@@ -355,6 +365,7 @@ bool CityScene::onContactBegan(PhysicsContact &contact) {
         auto scene = GameOverScene::createScene();
         //CocosDenshion::SimpleAudioEngine::sharedEngine()->stopBackgroundMusic(true);
         Director::getInstance( )->replaceScene( TransitionFade::create( TRANSITION_TIME, scene ) );
+        SCORE=0;
         //Director::getInstance()->end();
         return true;
     }
@@ -374,19 +385,19 @@ bool CityScene::onContactBegan(PhysicsContact &contact) {
     {
         bodyB->getNode()->removeFromParent();
         //Director::getInstance()->end();
-        SCORE++; // Score increment
+        coinsCollected++;
+        SCORE+=10; // Score increment
         scoreLabel->setString("SCORE: " + std::to_string(SCORE));
         CCLOG("Increment score");
         generateSpark();
         CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("collect-coin.ogg");
-
-
     }
     if ((bodyA->getCategoryBitmask() == (int) PhysicsCategory::Jewels )
         && (bodyB->getCategoryBitmask() == (int) PhysicsCategory::Soldier ))
     {
         bodyA->getNode()->removeFromParent();
         //Director::getInstance()->end();
+        coinsCollected++;
         SCORE+=10; // Score increment
         scoreLabel->setString("SCORE: " + std::to_string(SCORE));
         generateSpark();

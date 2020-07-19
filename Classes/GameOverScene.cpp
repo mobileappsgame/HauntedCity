@@ -62,6 +62,11 @@ bool GameOverScene::init() {
     auto playItem = MenuItemImage::create( "Play.png", "CloseNormal.png", CC_CALLBACK_1( GameOverScene::GoToGameScene, this ) );
     playItem->setPosition( Vec2( visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y ) );
 
+    auto menuPlay = Menu::create( playItem, NULL );
+    menuPlay->setPosition( Point::ZERO );
+
+    this->addChild( menuPlay, 2 );
+
     auto userdefaults = cocos2d::UserDefault::getInstance();
     highestLevel = userdefaults->getIntegerForKey("highestLevel");
     highestScore = userdefaults->getIntegerForKey("highestScore");
@@ -78,10 +83,13 @@ bool GameOverScene::init() {
                                  origin.y + visibleSize.height - scoreLabel->getContentSize().height));
     this->addChild(scoreLabel, 2);
 
-    auto menuPlay = Menu::create( playItem, NULL );
-    menuPlay->setPosition( Point::ZERO );
-
-    this->addChild( menuPlay, 2 );
+    // Display max. level
+    char maxlevel[256];
+    sprintf(maxlevel,"Highest Level Reached: %d",GameOverScene::highestLevel);
+    auto gamemaxlevel = Label::createWithTTF(maxlevel, "fonts/Marker Felt.ttf", 24);
+    gamemaxlevel->setPosition(Vec2(origin.x + visibleSize.width/2,
+                                 origin.y + visibleSize.height/4));
+    this->addChild(gamemaxlevel, 2);
 
     return true;
 }
