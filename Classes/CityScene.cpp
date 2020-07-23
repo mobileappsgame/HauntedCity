@@ -169,7 +169,7 @@ bool CityScene::init()
 void CityScene::update(float dt)
 {
     city->update(0.1);
-    if (coinsCollected == 3) // Certain number of coins to be collected to clear each level
+    if (coinsCollected == 10) // Certain number of coins to be collected to clear each level
     {
         coinsCollected = 0; // Re-set counter. Not required actually, since we are doing it at entry.
         auto scene = LevelClearedMenu::createScene();
@@ -278,11 +278,22 @@ void CityScene::addStones(float dt) {
     if (SCORE >= 3)
     {
         if ((random % 3) == 0) {
-            stones = Sprite::create("spikeB1.png");
+            if (GameOverScene::currentLevel > 3) {
+                stones = Sprite::create("spikeB1.png");
+                stones->setScaleY(1.8);
+            }
+            else {
+                stones = Sprite::create("spikeB1.png");
+            }
         }
         else {
             if (GameOverScene::currentLevel >= 3) {
-                stones = Sprite::create("boulder_1.png");
+                if (((random % 2) == 0) || ((random % 5) == 0)) {
+                    stones = Sprite::create("boulder_1.png");
+                }
+                else {
+                    stones = Sprite::create("boulder.png");
+                }
             }
             else {
                 stones = Sprite::create("boulder.png");
