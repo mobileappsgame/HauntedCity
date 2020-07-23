@@ -281,7 +281,12 @@ void CityScene::addStones(float dt) {
             stones = Sprite::create("spikeB1.png");
         }
         else {
-            stones = Sprite::create("boulder.png");
+            if (GameOverScene::currentLevel >= 3) {
+                stones = Sprite::create("boulder_1.png");
+            }
+            else {
+                stones = Sprite::create("boulder.png");
+            }
         }
     }
     else {

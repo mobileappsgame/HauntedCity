@@ -109,7 +109,7 @@ bool LevelSetter::init()
     // Menu 3 button
     CCMenuItemImage* playItem3 = createMenuItem(3, LevelSetter::maxlevel);
     playItem3->setPosition( Vec2(origin.x + 80 + playItem1->getContentSize().width + 25 + playItem2->getContentSize().width + 23, visibleSize.height/2 + origin.y + 10 + 53) );
-    playItem3->setTag(kTagOptions);
+    playItem3->setTag(3);
     auto menuPlay3 = Menu::create( playItem3, NULL );
     menuPlay3->setPosition( Point::ZERO );
     this->addChild(menuPlay3, 0);
@@ -117,7 +117,7 @@ bool LevelSetter::init()
     // Menu 4 button
     CCMenuItemImage* playItem4 = createMenuItem(4, LevelSetter::maxlevel);
     playItem4->setPosition( Vec2(origin.x + 80 + playItem1->getContentSize().width + 25 + playItem2->getContentSize().width + 23 + playItem3->getContentSize().width + 25, visibleSize.height/2 + origin.y + 10 + 53) );
-    playItem4->setTag(kTagOptions);
+    playItem4->setTag(4);
     auto menuPlay4 = Menu::create( playItem4, NULL );
     menuPlay4->setPosition( Point::ZERO );
     this->addChild(menuPlay4, 0);
@@ -125,7 +125,7 @@ bool LevelSetter::init()
     // Menu 5 button
     CCMenuItemImage* playItem5 = createMenuItem(5, LevelSetter::maxlevel);
     playItem5->setPosition( Vec2(origin.x + 80 + playItem1->getContentSize().width + 25 + playItem2->getContentSize().width + 23 + playItem2->getContentSize().width + 25 + playItem4->getContentSize().width + 25, visibleSize.height/2 + origin.y + 10 + 53) );
-    playItem5->setTag(kTagOptions);
+    playItem5->setTag(5);
     auto menuPlay5 = Menu::create( playItem5, NULL );
     menuPlay5->setPosition( Point::ZERO );
     this->addChild(menuPlay5, 0);
@@ -136,7 +136,7 @@ bool LevelSetter::init()
     // Menu 1 button
     CCMenuItemImage* playItem21 = createMenuItem(6, LevelSetter::maxlevel);
     playItem21->setPosition( Vec2(origin.x + 80, visibleSize.height/2 + origin.y -18) );
-    playItem21->setTag(kTagPlaygame);
+    playItem21->setTag(6);
     auto menuPlay21 = Menu::create( playItem21, NULL );
     menuPlay21->setPosition( Point::ZERO );
     this->addChild(menuPlay21, 0);
@@ -144,7 +144,7 @@ bool LevelSetter::init()
     // Menu 2 button
     CCMenuItemImage* playItem22 = createMenuItem(7, LevelSetter::maxlevel);
     playItem22->setPosition( Vec2(origin.x + 80 + playItem21->getContentSize().width + 25, visibleSize.height/2 + origin.y -18) );
-    playItem22->setTag(kTagOptions);
+    playItem22->setTag(7);
     auto menuPlay22 = Menu::create( playItem22, NULL );
     menuPlay22->setPosition( Point::ZERO );
     this->addChild(menuPlay22, 0);
@@ -152,7 +152,7 @@ bool LevelSetter::init()
     // Menu 3 button
     CCMenuItemImage* playItem23 = createMenuItem(8, LevelSetter::maxlevel);
     playItem23->setPosition( Vec2(origin.x + 80 + playItem21->getContentSize().width + 25 + playItem22->getContentSize().width + 25, visibleSize.height/2 + origin.y -18) );
-    playItem23->setTag(kTagOptions);
+    playItem23->setTag(8);
     auto menuPlay23 = Menu::create( playItem23, NULL );
     menuPlay23->setPosition( Point::ZERO );
     this->addChild(menuPlay23, 0);
@@ -160,7 +160,7 @@ bool LevelSetter::init()
     // Menu 4 button
     CCMenuItemImage* playItem24 = createMenuItem(9, LevelSetter::maxlevel);
     playItem24->setPosition( Vec2(origin.x + 80 + playItem21->getContentSize().width + 25 + playItem22->getContentSize().width + 25 + playItem23->getContentSize().width + 25, visibleSize.height/2 + origin.y -18) );
-    playItem24->setTag(kTagOptions);
+    playItem24->setTag(9);
     auto menuPlay24 = Menu::create( playItem24, NULL );
     menuPlay24->setPosition( Point::ZERO );
     this->addChild(menuPlay24, 0);
@@ -168,7 +168,7 @@ bool LevelSetter::init()
     // Menu 5 button
     CCMenuItemImage* playItem25 = createMenuItem(10, LevelSetter::maxlevel);
     playItem25->setPosition( Vec2(origin.x + 80 + playItem21->getContentSize().width + 25 + playItem22->getContentSize().width + 25 + playItem23->getContentSize().width + 25 + playItem24->getContentSize().width + 25, visibleSize.height/2 + origin.y -18) );
-    playItem25->setTag(kTagOptions);
+    playItem25->setTag(10);
     auto menuPlay25 = Menu::create( playItem25, NULL );
     menuPlay25->setPosition( Point::ZERO );
     this->addChild(menuPlay25, 0);
@@ -178,7 +178,7 @@ bool LevelSetter::init()
     // Menu 1 button
     CCMenuItemImage* playItem31 = createMenuItem(11, LevelSetter::maxlevel);
     playItem31->setPosition( Vec2(origin.x + 80, visibleSize.height/2 + origin.y -100) );
-    playItem31->setTag(kTagPlaygame);
+    playItem31->setTag(11);
     auto menuPlay31 = Menu::create( playItem31, NULL );
     menuPlay31->setPosition( Point::ZERO );
     this->addChild(menuPlay31, 0);
@@ -186,7 +186,7 @@ bool LevelSetter::init()
     // Menu 2 button
     CCMenuItemImage* playItem32 = createMenuItem(12, LevelSetter::maxlevel);
     playItem32->setPosition( Vec2(origin.x + 80 + playItem21->getContentSize().width + 25, visibleSize.height/2 + origin.y -100) );
-    playItem32->setTag(kTagOptions);
+    playItem32->setTag(12);
     auto menuPlay32 = Menu::create( playItem32, NULL );
     menuPlay32->setPosition( Point::ZERO );
     this->addChild(menuPlay32, 0);
@@ -223,8 +223,11 @@ void LevelSetter::setGameLevel(CCObject* pSender)
     int tag = (int)pMenuItem->getTag();
     CCLOG("***************** tag = %d *****************************",tag);
 
-    if (tag > maxlevel)
+    if (tag > maxlevel) {
+        CCLOG("Returning...The clicked level has not been cleared yet.");
         return; // The clicked level has not been cleared yet, so return
+    }
+
 
     switch (tag)
     {

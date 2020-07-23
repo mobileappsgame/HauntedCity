@@ -85,7 +85,7 @@ bool GameOverScene::init() {
 
     // Display max. level
     char maxlevel[256];
-    sprintf(maxlevel,"Highest Level Reached: %d",GameOverScene::highestLevel);
+    sprintf(maxlevel,"Highest Level Reached: %d",highestLevel);
     auto gamemaxlevel = Label::createWithTTF(maxlevel, "fonts/Marker Felt.ttf", 24);
     gamemaxlevel->setPosition(Vec2(origin.x + visibleSize.width/2,
                                  origin.y + visibleSize.height/4));
