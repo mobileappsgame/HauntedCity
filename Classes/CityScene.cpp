@@ -38,6 +38,7 @@ Scene* CityScene::createScene()
     auto scene = Scene::createWithPhysics();
     scene->getPhysicsWorld()->setGravity(Vect(0, 0));
 
+    scene->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
     // 'layer' is an autorelease object
     CityScene *layer = CityScene::create();
 
@@ -177,7 +178,7 @@ bool CityScene::init()
     sprite3 = Sprite::createWithSpriteFrame(frames.front());
     sprite3->setPosition(Vec2(origin.x + visibleSize.width/3 -3, origin.y + visibleSize.height/3 -3));
 
-
+    sprite3->setTag(10);
     initializePhysics(sprite3);
     sprite3->getPhysicsBody()->setCategoryBitmask((int)PhysicsCategory::Soldier);
     sprite3->getPhysicsBody()->setCollisionBitmask((int)PhysicsCategory::None);
@@ -193,7 +194,7 @@ bool CityScene::init()
     schedule(schedule_selector(CityScene::addStones), 3);
     schedule(schedule_selector(CityScene::addJewels), 5);
     schedule(schedule_selector(CityScene::addSkulls), 6);
-    schedule(schedule_selector(CityScene::shootArrows), 10);
+    schedule(schedule_selector(CityScene::shootArrows), 8);
 
 
     auto contactListener = EventListenerPhysicsContact::create();
@@ -408,6 +409,7 @@ void CityScene::shootArrows(float dt) {
 
     arrows = Sprite::create("arrow.png");
     arrows->setScaleX(0.5);
+    arrows->setTag(10);
 
 
     // 1
@@ -512,8 +514,12 @@ bool CityScene::onContactBegan(PhysicsContact &contact) {
 void CityScene::initializePhysics(Sprite* sprite)
 {
     auto circle = PhysicsBody::createCircle(sprite -> getContentSize().width/2);
-    //auto circle = PhysicsBody::createBox(Size(100.0f, 100.0f),
-    //                                        PhysicsMaterial(0, 1, 0));
+    if (sprite->getTag() == 10) // It is an arrow, set box Physics body
+    {
+        circle = PhysicsBody::createBox(Size(sprite -> getContentSize().width/2, sprite -> getContentSize().height/2),
+                                             PhysicsMaterial(0, 0, 0));
+    }
+
     circle->setContactTestBitmask(true);
     circle->setDynamic(true);
     sprite->setPhysicsBody(circle);
@@ -554,6 +560,7 @@ bool CityScene::generateSpark()
     this->addChild(m_emitter, 5);
     return true;
 }
+
 void CityScene::menuCloseCallback(Ref* pSender)
 {
     //Close the cocos2d-x game scene and quit the application

@@ -17,6 +17,7 @@ public:
     ScrollingBg *city;
     static int SCORE;
     cocos2d::Label* scoreLabel;
+    //Sprite* arrows;
 
     // At each level you need to collect a certain number of coins to clear that level
     int coinsCollected;
