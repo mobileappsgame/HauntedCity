@@ -193,6 +193,7 @@ bool CityScene::init()
     schedule(schedule_selector(CityScene::addStones), 3);
     schedule(schedule_selector(CityScene::addJewels), 5);
     schedule(schedule_selector(CityScene::addSkulls), 6);
+    schedule(schedule_selector(CityScene::shootArrows), 10);
 
 
     auto contactListener = EventListenerPhysicsContact::create();
@@ -394,6 +395,51 @@ void CityScene::addSkulls(float dt)
     }
     //SCORE++; // Score increment
     //scoreLabel->setString("SCORE: " + std::to_string(SCORE));
+}
+
+void CityScene::shootArrows(float dt) {
+
+    auto visibleSize = Director::getInstance()->getVisibleSize();
+    Vec2 origin = Director::getInstance()->getVisibleOrigin();
+
+    int random = (rand() % 10);
+    Sprite* arrows;
+
+
+    arrows = Sprite::create("arrow.png");
+    arrows->setScaleX(0.5);
+
+
+    // 1
+    auto monsterContentSize = arrows->getContentSize();
+    auto selfContentSize = this->getContentSize();
+    int minY = monsterContentSize.height/2;
+    int maxY = selfContentSize.height - monsterContentSize.height/2;
+    int rangeY = maxY - minY;
+    int randomY = (rand() % rangeY) + minY;
+
+    arrows->setPosition(Vec2(selfContentSize.width + monsterContentSize.width/2, visibleSize.height/2 -1 ));
+
+    initializePhysics(arrows);
+    arrows->getPhysicsBody()->setCategoryBitmask((int)PhysicsCategory::Boulder);
+    arrows->getPhysicsBody()->setCollisionBitmask((int)PhysicsCategory::None);
+    arrows->getPhysicsBody()->setContactTestBitmask((int)PhysicsCategory::Soldier);
+
+    this->addChild(arrows);
+
+    // 2
+    int minDuration = 2.0;
+    int maxDuration = 4.0;
+    int rangeDuration = maxDuration - minDuration;
+    int randomDuration = (rand() % rangeDuration) + minDuration;
+
+    // 3
+    //auto actionMove = MoveTo::create(randomDuration, Vec2(-monsterContentSize.width/2, visibleSize.height/2));
+    auto showFlipped = ScaleTo::create(0, -1, 1, 1);
+    auto actionMove = MoveTo::create(2, Vec2(-origin.x, visibleSize.height/3 -1));
+    auto actionRemove = RemoveSelf::create();
+    arrows->runAction(Sequence::create(showFlipped, actionMove, actionRemove, nullptr));
+
 }
 
 bool CityScene::onContactBegan(PhysicsContact &contact) {

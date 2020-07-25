@@ -31,6 +31,7 @@ public:
     void initTouch();
     cocos2d::CCSprite *sprite3;
     void jumpSprite(cocos2d::CCSprite *mysprite);
+    void shootArrows(float dt);
     void moveSprite(Touch* touch, Event* evento);
     void initializePhysics(cocos2d::Sprite* sprite);
     bool onContactBegan(cocos2d::PhysicsContact &contact);
