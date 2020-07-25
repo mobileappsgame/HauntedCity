@@ -124,7 +124,43 @@ bool CityScene::init()
 
 
     // Parallax scrolling layers below with different speed
-    city = ScrollingBg::create("city1.png", 4.0, 0.5, 0.7);
+
+    if (GameOverScene::currentLevel == 1) {
+        city = ScrollingBg::create("background/city1.png", 4.0, 0.5, 0.7);
+    }
+    else if (GameOverScene::currentLevel == 2) {
+        city = ScrollingBg::create("background/city2.png", 4.0, 0.5, 0.7);
+    }
+    else if (GameOverScene::currentLevel == 3) {
+        city = ScrollingBg::create("background/city3.png", 4.0, 0.5, 0.7);
+    }
+    else if (GameOverScene::currentLevel == 4) {
+        city = ScrollingBg::create("background/city4.png", 4.0, 0.5, 0.7);
+    }
+    else if (GameOverScene::currentLevel == 5) {
+        city = ScrollingBg::create("background/city5.png", 4.0, 0.5, 0.7);
+    }
+    else if (GameOverScene::currentLevel == 6) {
+        city = ScrollingBg::create("background/city6.png", 4.0, 0.5, 0.7);
+    }
+    else if (GameOverScene::currentLevel == 7) {
+        city = ScrollingBg::create("background/city7.png", 4.0, 0.5, 0.7);
+    }
+    else if (GameOverScene::currentLevel == 8) {
+        city = ScrollingBg::create("background/city8.png", 4.0, 0.5, 0.7);
+    }
+    else if (GameOverScene::currentLevel == 9) {
+        city = ScrollingBg::create("background/city9.png", 4.0, 0.5, 0.7);
+    }
+    else if (GameOverScene::currentLevel == 10) {
+        city = ScrollingBg::create("background/city10.png", 4.0, 0.5, 0.7);
+    }
+    else if (GameOverScene::currentLevel == 11) {
+        city = ScrollingBg::create("background/city11.png", 4.0, 0.5, 0.7);
+    }
+    else if (GameOverScene::currentLevel == 12) {
+        city = ScrollingBg::create("background/city12.png", 4.0, 0.5, 0.7);
+    }
     this->addChild(city);
 
 
@@ -169,7 +205,7 @@ bool CityScene::init()
 void CityScene::update(float dt)
 {
     city->update(0.1);
-    if (coinsCollected == 10) // Certain number of coins to be collected to clear each level
+    if (coinsCollected == 5) // Certain number of coins to be collected to clear each level
     {
         coinsCollected = 0; // Re-set counter. Not required actually, since we are doing it at entry.
         auto scene = LevelClearedMenu::createScene();
