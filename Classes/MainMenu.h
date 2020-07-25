@@ -16,6 +16,7 @@ public:
     void menuCloseCallback(cocos2d::CCObject* pSender);
     CREATE_FUNC(MainMenu);
     void GoToLevelSetter( cocos2d::Ref *sender );
+    void GoToGameScene( cocos2d::Ref *sender );
 };
 
 #endif //PROJ_ANDROID_MAINMENU_H

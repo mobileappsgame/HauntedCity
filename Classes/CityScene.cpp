@@ -38,7 +38,7 @@ Scene* CityScene::createScene()
     auto scene = Scene::createWithPhysics();
     scene->getPhysicsWorld()->setGravity(Vect(0, 0));
 
-    scene->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
+    //scene->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
     // 'layer' is an autorelease object
     CityScene *layer = CityScene::create();
 
