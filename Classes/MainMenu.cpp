@@ -132,12 +132,6 @@ bool MainMenu::init() {
     menuPlay2->setPosition( Point::ZERO );
     this->addChild( menuPlay2, 4 );
 
-    // Firebase AdMob
-    // General scene setup ...
-
-
-
-
     return true;
 }
 

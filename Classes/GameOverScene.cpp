@@ -5,6 +5,7 @@
 #include "GameOverScene.h"
 #include "CityScene.h"
 #include "SimpleAudioEngine.h"
+#include "LevelSetter.h"
 
 #define TRANSITION_TIME 0.5
 
@@ -37,35 +38,45 @@ bool GameOverScene::init() {
     //CocosDenshion::SimpleAudioEngine::sharedEngine()->preloadBackgroundMusic("running.ogg");
     CocosDenshion::SimpleAudioEngine::sharedEngine()->playBackgroundMusic("game-on.ogg",true);
 
-    // add a "close" icon to exit the progress. it's an autorelease object
-    auto closeItem = MenuItemImage::create(
-            "CloseNormal.png",
-            "CloseSelected.png",
-            CC_CALLBACK_1(GameOverScene::menuCloseCallback, this));
-
-    float x = origin.x + visibleSize.width - closeItem->getContentSize().width / 2;
-    float y = origin.y + closeItem->getContentSize().height / 2;
-    closeItem->setPosition(Vec2(x, y));
-
-    // Closing menu
-    auto menu = Menu::create(closeItem, NULL);
-    menu->setPosition(Vec2::ZERO);
-    this->addChild(menu, 1);
 
     // Background Sprite
-    auto backgroundSprite = Sprite::create("gameOver.png");
+    auto backgroundSprite = Sprite::create("background/city7.png");
     backgroundSprite->setPosition(origin.x + visibleSize.width / 2,
                                   origin.y + visibleSize.height / 2);
     this->addChild(backgroundSprite, 0);
 
-    // Play menu
-    auto playItem = MenuItemImage::create( "Play.png", "CloseNormal.png", CC_CALLBACK_1( GameOverScene::GoToGameScene, this ) );
-    playItem->setPosition( Vec2( visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y ) );
 
-    auto menuPlay = Menu::create( playItem, NULL );
-    menuPlay->setPosition( Point::ZERO );
+    auto gameover = Sprite::create("gameover/gameover1.png");
+    gameover->setPosition(origin.x + visibleSize.width / 2,
+                                  origin.y + visibleSize.height/2 + 60);
+    gameover->setScale(0.3);
+    this->addChild(gameover, 1);
 
-    this->addChild( menuPlay, 2 );
+    // retry menu
+    auto playItem1 = MenuItemImage::create( "gameover/retry.png", "CloseNormal.png", CC_CALLBACK_1( GameOverScene::GoToGameScene, this ) );
+    playItem1->setPosition( Vec2( visibleSize.width / 2 + origin.x - 120, visibleSize.height / 2 + origin.y -30) );
+    auto menuPlay1 = Menu::create( playItem1, NULL );
+    menuPlay1->setScale(0.7);
+    menuPlay1->setPosition( Point::ZERO );
+    this->addChild( menuPlay1, 2 );
+
+    // Settings menu
+    auto playItem2 = MenuItemImage::create( "gameover/settings.png", "CloseNormal.png", CC_CALLBACK_1( GameOverScene::GoToLevelSelect, this ) );
+    playItem2->setPosition( Vec2( visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y -30) );
+    auto menuPlay2 = Menu::create( playItem2, NULL );
+    menuPlay2->setScale(0.7);
+    menuPlay2->setPosition( Point::ZERO );
+    this->addChild( menuPlay2, 2 );
+
+    // Exit menu
+    auto playItem3 = MenuItemImage::create( "gameover/exit.png", "CloseNormal.png", CC_CALLBACK_1( GameOverScene::menuCloseCallback, this ) );
+    playItem3->setPosition( Vec2( visibleSize.width / 2 + origin.x + 120, visibleSize.height / 2 + origin.y -30) );
+    auto menuPlay3 = Menu::create( playItem3, NULL );
+    menuPlay3->setScale(0.7);
+    menuPlay3->setPosition( Point::ZERO );
+    this->addChild( menuPlay3, 2 );
+
+
 
     auto userdefaults = cocos2d::UserDefault::getInstance();
     highestLevel = userdefaults->getIntegerForKey("highestLevel");
@@ -88,7 +99,7 @@ bool GameOverScene::init() {
     sprintf(maxlevel,"Highest Level Reached: %d",highestLevel);
     auto gamemaxlevel = Label::createWithTTF(maxlevel, "fonts/Marker Felt.ttf", 24);
     gamemaxlevel->setPosition(Vec2(origin.x + visibleSize.width/2,
-                                 origin.y + visibleSize.height/4));
+                                 origin.y + visibleSize.height/4 -10));
     this->addChild(gamemaxlevel, 2);
 
     return true;
@@ -108,4 +119,10 @@ void GameOverScene::menuCloseCallback(CCObject* pSender)
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
     exit(0);
 #endif
+}
+
+void GameOverScene::GoToLevelSelect(CCObject* pSender)
+{
+    auto scene = LevelSetter::createScene();
+    Director::getInstance( )->replaceScene( TransitionFade::create( TRANSITION_TIME, scene ) );
 }

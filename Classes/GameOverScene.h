@@ -18,6 +18,7 @@ public:
     void menuCloseCallback(cocos2d::CCObject* pSender);
     CREATE_FUNC(GameOverScene);
     void GoToGameScene( cocos2d::Ref *sender );
+    void GoToLevelSelect(cocos2d::CCObject* pSender);
 };
 
 #endif //PROJ_ANDROID_GAMEOVERSCENE_H
