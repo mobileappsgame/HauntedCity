@@ -24,6 +24,7 @@
 
 #include "AppDelegate.h"
 #include "MainMenu.h"
+#include "PluginAdMob/PluginAdMob.h"
 
 // #define USE_AUDIO_ENGINE 1
 // #define USE_SIMPLE_AUDIO_ENGINE 1
@@ -87,6 +88,8 @@ bool AppDelegate::applicationDidFinishLaunching() {
 #else
         glview = GLViewImpl::create("HauntedCity");
 #endif
+        sdkbox::PluginAdMob::init();
+        glview = GLViewImpl::createWithRect("admob_cpp", Rect(0, 0, 640, 960));
         director->setOpenGLView(glview);
     }
 
@@ -123,6 +126,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
     // run
     director->runWithScene(scene);
 
+    sdkbox::PluginAdMob::init();
     return true;
 }
 

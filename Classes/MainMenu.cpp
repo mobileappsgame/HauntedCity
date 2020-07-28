@@ -5,11 +5,56 @@
 #include "MainMenu.h"
 #include "LevelSetter.h"
 #include "CityScene.h"
+#include "SDKBox.h"
+#include "PluginAdMob/PluginAdMob.h"
 
 #define TRANSITION_TIME 0.5
 #include "../cocos2d/cocos/deprecated/CCDeprecated.h"
 //#include "../cocos2d/cocos/physics/CCPhysicsBody.h"
 USING_NS_CC;
+static std::string kHomeBanner = "home";
+static std::string kGameOverAd = "gameover";
+static std::string kRewardedAd = "rewarded";
+
+class IMListener : public sdkbox::AdMobListener {
+public:
+    virtual void adViewDidReceiveAd(const std::string &name) {
+        log("admob adViewDidReceiveAd %s: ", name.c_str());
+        sdkbox::PluginAdMob::show(kHomeBanner);
+        //if (showText) showText(StringUtils::format("%s name=%s", __FUNCTION__, name.c_str()));
+    }
+    virtual void adViewDidFailToReceiveAdWithError(const std::string &name, const std::string &msg) {
+        CCLOG("*********** admob adViewDidFailToReceiveAdWithError %s: %s", msg.c_str(), name.c_str());
+
+        float delay = 6; // seconds
+        cocos2d::Director::getInstance()->getScheduler()->schedule([name](float) {
+            cocos2d::log("cache %s again", name.c_str());
+            sdkbox::PluginAdMob::cache(name);
+        }, this, 0, 0, delay, false, "once");
+        //if (showText) showText(StringUtils::format("%s name=%s, msg=%s", __FUNCTION__, name.c_str(), msg.c_str()));
+    }
+    virtual void adViewWillPresentScreen(const std::string &name) {
+        CCLOG("admob adViewWillPresentScreen %s: ", name.c_str());
+        //if (showText) showText(StringUtils::format("%s name=%s", __FUNCTION__, name.c_str()));
+    }
+    virtual void adViewDidDismissScreen(const std::string &name) {
+        CCLOG("admob adViewDidDismissScreen %s: ", name.c_str());
+        //if (showText) showText(StringUtils::format("%s name=%s", __FUNCTION__, name.c_str()));
+    }
+    virtual void adViewWillDismissScreen(const std::string &name) {
+        //if (showText) showText(StringUtils::format("%s name=%s", __FUNCTION__, name.c_str()));
+
+        //if (name == "gameover") {
+        //sdkbox::PluginAdMob::cache(kHomeBanner);
+        //sdkbox::PluginAdMob::cache(kGameOverAd);
+        //}
+        CCLOG("admob adViewWillDismissScreen %s: ", name.c_str());
+    }
+    virtual void adViewWillLeaveApplication(const std::string &name) {
+        //if (showText) showText(StringUtils::format("%s name=%s", __FUNCTION__, name.c_str()));
+        CCLOG("admob adViewWillLeaveApplication %s: ", name.c_str());
+    }
+};
 
 Scene* MainMenu::createScene()
 {
@@ -31,6 +76,22 @@ bool MainMenu::init() {
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
+    //SDK Box call
+    //sdkbox::PluginSdkboxAds::playAd("InterstitialAd","");
+
+    /*sdkbox::PluginAdMob::cache("home");
+    sdkbox::PluginAdMob::cache("gameover");
+
+    sdkbox::PluginAdMob::show("home");
+    sdkbox::PluginAdMob::show("gameover");
+     */
+    sdkbox::PluginAdMob::setListener(new IMListener());
+    //schedule(schedule_selector(MainMenu::update));
+
+    //return true;
+
+    //auto scene = SDKBox::createScene();
+    //Director::getInstance( )->replaceScene( TransitionFade::create( TRANSITION_TIME, scene ) );
 
     // Background Sprite
     auto backgroundSprite = Sprite::create("background/city11.png");
@@ -71,6 +132,12 @@ bool MainMenu::init() {
     menuPlay2->setPosition( Point::ZERO );
     this->addChild( menuPlay2, 4 );
 
+    // Firebase AdMob
+    // General scene setup ...
+
+
+
+
     return true;
 }
 
@@ -94,4 +161,13 @@ void MainMenu::GoToGameScene( cocos2d::Ref *sender )
     //CocosDenshion::SimpleAudioEngine::sharedEngine()->stopBackgroundMusic();
     auto scene = CityScene::createScene();
     Director::getInstance( )->replaceScene( TransitionFade::create( TRANSITION_TIME, scene ) );
+}
+
+void MainMenu::update(float dt)
+{
+    //sdkbox::PluginAdMob::cache("home");
+    //sdkbox::PluginAdMob::cache("gameover");
+
+    sdkbox::PluginAdMob::show("home");
+    //sdkbox::PluginAdMob::show("gameover");
 }

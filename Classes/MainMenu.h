@@ -17,6 +17,7 @@ public:
     CREATE_FUNC(MainMenu);
     void GoToLevelSetter( cocos2d::Ref *sender );
     void GoToGameScene( cocos2d::Ref *sender );
+    void update(float dt);
 };
 
 #endif //PROJ_ANDROID_MAINMENU_H
