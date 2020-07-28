@@ -1,0 +1,21 @@
+{
+    "android": {
+        "AdMob": {
+            "test": false,
+            "ads": {
+                "gameover": {
+                    "type": "interstitial",
+                    "id": "ca-app-pub-7460553244032885/6906244653"
+                },
+                "home": {
+                    "width": 300,
+                    "type": "banner",
+                    "id": "ca-app-pub-7460553244032885/4088509625",
+                    "alignment": "bottom",
+                    "height": 50
+                }
+            }
+        },
+        "appid": "ca-app-pub-7460553244032885~4597320677"
+    }
+}
