@@ -207,7 +207,7 @@ bool CityScene::init()
 void CityScene::update(float dt)
 {
     city->update(0.1);
-    if (coinsCollected == 5) // Certain number of coins to be collected to clear each level
+    if (coinsCollected == 2) // Certain number of coins to be collected to clear each level
     {
         coinsCollected = 0; // Re-set counter. Not required actually, since we are doing it at entry.
         auto scene = LevelClearedMenu::createScene();

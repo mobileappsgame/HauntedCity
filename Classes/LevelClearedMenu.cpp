@@ -60,6 +60,7 @@ bool LevelClearedMenu::init() {
     auto backgroundSprite = Sprite::create("level-select/level_cleared_screen.png");
     backgroundSprite->setPosition(origin.x + visibleSize.width / 2,
                                   origin.y + visibleSize.height / 2);
+    backgroundSprite->setScale(0.8);
     this->addChild(backgroundSprite, 0);
 
     auto userdefaults = cocos2d::UserDefault::getInstance();
@@ -73,6 +74,15 @@ bool LevelClearedMenu::init() {
             userdefaults->setIntegerForKey("highestLevel", GameOverScene::highestLevel);
         }
     }
+
+    // Print next level and highest level
+    char nextlevel[256];
+    sprintf(nextlevel,"Next Level: %d",GameOverScene::currentLevel);
+    auto gamenextlevel = Label::createWithTTF(nextlevel, "fonts/Marker Felt.ttf", 24);
+    gamenextlevel->setPosition(Vec2(origin.x + visibleSize.width/2,
+                                   origin.y + visibleSize.height/2 - 30));
+    this->addChild(gamenextlevel, 2);
+
 
     auto highestScore = userdefaults->getIntegerForKey("highestScore");
     if (CityScene::SCORE > GameOverScene::highestScore)
@@ -89,14 +99,16 @@ bool LevelClearedMenu::init() {
 
     auto settingsPlay = Menu::create( settingsItem, NULL );
     settingsPlay->setPosition( Point::ZERO );
+    settingsPlay->setScale(0.8);
     this->addChild( settingsPlay, 2 );
 
     // Re-try menu at same level
     auto retryLevelItem = MenuItemImage::create( "level-select/retry-level.png", "CloseNormal.png", CC_CALLBACK_1( LevelClearedMenu::RetrySameLevel, this ) );
-    retryLevelItem->setPosition( Vec2( origin.x + 165 + settingsItem->getContentSize().width + 20, visibleSize.height/2 + origin.y -108 ) );
+    retryLevelItem->setPosition( Vec2( origin.x + 162 + settingsItem->getContentSize().width + 20, visibleSize.height/2 + origin.y -108 ) );
 
     auto retryLevelPlay = Menu::create( retryLevelItem, NULL );
     retryLevelPlay->setPosition( Point::ZERO );
+    retryLevelPlay->setScale(0.8);
     this->addChild( retryLevelPlay, 2 );
 
     // Jump to next cleared level
@@ -105,6 +117,7 @@ bool LevelClearedMenu::init() {
     nextLevelItem->setScale(0.7);
     auto nextLevelPlay = Menu::create( nextLevelItem, NULL );
     nextLevelPlay->setPosition( Point::ZERO );
+    nextLevelPlay->setScale(0.8);
     this->addChild( nextLevelPlay, 2 );
 
 

@@ -87,17 +87,35 @@ bool GameOverScene::init() {
         userdefaults->setIntegerForKey("highestScore", highestScore);
     }
 
+    // Score label
     char text[256];
-    sprintf(text,"Score: %d, Highest Score: %d",CityScene::SCORE, highestScore);
-    auto scoreLabel = Label::createWithTTF(text, "fonts/Marker Felt.ttf", 24);
-    scoreLabel->setPosition(Vec2(origin.x + visibleSize.width/2,
+    sprintf(text,"Score:");
+    auto scoreLabel = Label::createWithTTF(text, "fonts/Marker Felt.ttf", 20);
+    scoreLabel->setPosition(Vec2(origin.x + visibleSize.width/2 + 160 - 10,
                                  origin.y + visibleSize.height - scoreLabel->getContentSize().height));
     this->addChild(scoreLabel, 2);
 
+    // Current score
+    char text1[256];
+    sprintf(text1,"Current: %d",CityScene::SCORE);
+    auto scoreLabel1 = Label::createWithTTF(text1, "fonts/Marker Felt.ttf", 20);
+    scoreLabel1->setPosition(Vec2(origin.x + visibleSize.width/2 + 160 + 20,
+                                 origin.y + visibleSize.height - scoreLabel1->getContentSize().height - 20));
+    this->addChild(scoreLabel1, 2);
+
+    // Highest
+    char text2[256];
+    sprintf(text2,"Highest: %d",highestScore);
+    auto scoreLabel2 = Label::createWithTTF(text2, "fonts/Marker Felt.ttf", 20);
+    scoreLabel2->setPosition(Vec2(origin.x + visibleSize.width/2 + 160 + 25,
+                                 origin.y + visibleSize.height - scoreLabel2->getContentSize().height - 40));
+    this->addChild(scoreLabel2, 2);
+
+
     // Display max. level
     char maxlevel[256];
-    sprintf(maxlevel,"Highest Level Reached: %d",highestLevel);
-    auto gamemaxlevel = Label::createWithTTF(maxlevel, "fonts/Marker Felt.ttf", 24);
+    sprintf(maxlevel,"Highest Level Cleared: %d",highestLevel);
+    auto gamemaxlevel = Label::createWithTTF(maxlevel, "fonts/Marker Felt.ttf", 20);
     gamemaxlevel->setPosition(Vec2(origin.x + visibleSize.width/2,
                                  origin.y + visibleSize.height/4 -10));
     this->addChild(gamemaxlevel, 2);

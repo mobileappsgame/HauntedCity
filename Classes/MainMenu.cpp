@@ -103,14 +103,14 @@ bool MainMenu::init() {
     // Game label
     auto label = Label::createWithTTF("Haunted City", "fonts/VerminVibesV-Zlg3.ttf", 30);
     label->setPosition(Vec2(origin.x + visibleSize.width/2,
-                            origin.y + visibleSize.height - label->getContentSize().height -50));
+                            origin.y + visibleSize.height - label->getContentSize().height -30 +30));
     label->setTextColor(Color4B::WHITE);
     //label->enableOutline(Color4B::BLACK);
     this->addChild(label, 2);
 
     // Play menu
     auto playItem = MenuItemImage::create( "play-button.png", "CloseNormal.png", CC_CALLBACK_1( MainMenu::GoToGameScene, this ) );
-    playItem->setPosition( Vec2( visibleSize.width / 2 + origin.x + 15, visibleSize.height / 2 + origin.y ) );
+    playItem->setPosition( Vec2( visibleSize.width / 2 + origin.x + 15, visibleSize.height / 2 + origin.y +30) );
     playItem->setScale(1.5);
     auto menuPlay = Menu::create( playItem, NULL );
     menuPlay->setPosition( Point::ZERO );
@@ -118,7 +118,7 @@ bool MainMenu::init() {
 
     // Options menu
     auto playItem1 = MenuItemImage::create( "options-button.png", "CloseNormal.png", CC_CALLBACK_1( MainMenu::GoToLevelSetter, this ) );
-    playItem1->setPosition( Vec2( visibleSize.width / 2 + origin.x + 15, visibleSize.height / 2 + origin.y -50) );
+    playItem1->setPosition( Vec2( visibleSize.width / 2 + origin.x + 15, visibleSize.height / 2 + origin.y -50 +30) );
     playItem1->setScale(1.5);
     auto menuPlay1 = Menu::create( playItem1, NULL );
     menuPlay1->setPosition( Point::ZERO );
@@ -126,7 +126,7 @@ bool MainMenu::init() {
 
     // Quit
     auto playItem2 = MenuItemImage::create( "quit-button.png", "CloseNormal.png", CC_CALLBACK_1( MainMenu::menuCloseCallback, this ) );
-    playItem2->setPosition( Vec2( visibleSize.width / 2 + origin.x + 15, visibleSize.height / 2 + origin.y -100) );
+    playItem2->setPosition( Vec2( visibleSize.width / 2 + origin.x + 15, visibleSize.height / 2 + origin.y -100 +30) );
     playItem2->setScale(1.5);
     auto menuPlay2 = Menu::create( playItem2, NULL );
     menuPlay2->setPosition( Point::ZERO );
