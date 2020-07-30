@@ -431,14 +431,14 @@ void CityScene::shootArrows(float dt) {
 
     // 2
     int minDuration = 2.0;
-    int maxDuration = 4.0;
+    int maxDuration = 3.0;
     int rangeDuration = maxDuration - minDuration;
     int randomDuration = (rand() % rangeDuration) + minDuration;
 
     // 3
     //auto actionMove = MoveTo::create(randomDuration, Vec2(-monsterContentSize.width/2, visibleSize.height/2));
     auto showFlipped = ScaleTo::create(0, -1, 1, 1);
-    auto actionMove = MoveTo::create(2, Vec2(-origin.x, visibleSize.height/3 -1));
+    auto actionMove = MoveTo::create(randomDuration, Vec2(-origin.x, visibleSize.height/2 -1));
     auto actionRemove = RemoveSelf::create();
     arrows->runAction(Sequence::create(showFlipped, actionMove, actionRemove, nullptr));
 

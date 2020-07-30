@@ -14,6 +14,7 @@ public:
     static cocos2d::Scene* createScene();
     virtual bool init();
     void menuCloseCallback(cocos2d::CCObject* pSender);
+    void GoToRulesScene( cocos2d::Ref *sender );
     CREATE_FUNC(MainMenu);
     void GoToLevelSetter( cocos2d::Ref *sender );
     void GoToGameScene( cocos2d::Ref *sender );

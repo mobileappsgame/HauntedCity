@@ -53,26 +53,26 @@ bool GameOverScene::init() {
     this->addChild(gameover, 1);
 
     // retry menu
-    auto playItem1 = MenuItemImage::create( "gameover/retry.png", "CloseNormal.png", CC_CALLBACK_1( GameOverScene::GoToGameScene, this ) );
-    playItem1->setPosition( Vec2( visibleSize.width / 2 + origin.x - 120, visibleSize.height / 2 + origin.y -30) );
+    auto playItem1 = MenuItemImage::create( "gameover/retry.png", "", CC_CALLBACK_1( GameOverScene::GoToGameScene, this ) );
+    playItem1->setPosition( Vec2( visibleSize.width / 2 + origin.x - 120, visibleSize.height / 2 + origin.y -45) );
     auto menuPlay1 = Menu::create( playItem1, NULL );
-    menuPlay1->setScale(0.7);
+    menuPlay1->setScale(0.5);
     menuPlay1->setPosition( Point::ZERO );
     this->addChild( menuPlay1, 2 );
 
     // Settings menu
-    auto playItem2 = MenuItemImage::create( "gameover/settings.png", "CloseNormal.png", CC_CALLBACK_1( GameOverScene::GoToLevelSelect, this ) );
-    playItem2->setPosition( Vec2( visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y -30) );
+    auto playItem2 = MenuItemImage::create( "gameover/settings.png", "", CC_CALLBACK_1( GameOverScene::GoToLevelSelect, this ) );
+    playItem2->setPosition( Vec2( visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y -45) );
     auto menuPlay2 = Menu::create( playItem2, NULL );
-    menuPlay2->setScale(0.7);
+    menuPlay2->setScale(0.5);
     menuPlay2->setPosition( Point::ZERO );
     this->addChild( menuPlay2, 2 );
 
     // Exit menu
-    auto playItem3 = MenuItemImage::create( "gameover/exit.png", "CloseNormal.png", CC_CALLBACK_1( GameOverScene::menuCloseCallback, this ) );
-    playItem3->setPosition( Vec2( visibleSize.width / 2 + origin.x + 120, visibleSize.height / 2 + origin.y -30) );
+    auto playItem3 = MenuItemImage::create( "gameover/exit.png", "", CC_CALLBACK_1( GameOverScene::menuCloseCallback, this ) );
+    playItem3->setPosition( Vec2( visibleSize.width / 2 + origin.x + 120, visibleSize.height / 2 + origin.y -45) );
     auto menuPlay3 = Menu::create( playItem3, NULL );
-    menuPlay3->setScale(0.7);
+    menuPlay3->setScale(0.5);
     menuPlay3->setPosition( Point::ZERO );
     this->addChild( menuPlay3, 2 );
 

@@ -5,8 +5,8 @@
 #include "MainMenu.h"
 #include "LevelSetter.h"
 #include "CityScene.h"
-#include "SDKBox.h"
 #include "PluginAdMob/PluginAdMob.h"
+#include "GameRules.h"
 
 #define TRANSITION_TIME 0.5
 #include "../cocos2d/cocos/deprecated/CCDeprecated.h"
@@ -109,7 +109,7 @@ bool MainMenu::init() {
     this->addChild(label, 2);
 
     // Play menu
-    auto playItem = MenuItemImage::create( "play-button.png", "CloseNormal.png", CC_CALLBACK_1( MainMenu::GoToGameScene, this ) );
+    auto playItem = MenuItemImage::create( "play-button.png", "", CC_CALLBACK_1( MainMenu::GoToGameScene, this ) );
     playItem->setPosition( Vec2( visibleSize.width / 2 + origin.x + 15, visibleSize.height / 2 + origin.y +30) );
     playItem->setScale(1.5);
     auto menuPlay = Menu::create( playItem, NULL );
@@ -117,7 +117,7 @@ bool MainMenu::init() {
     this->addChild( menuPlay, 5 );
 
     // Options menu
-    auto playItem1 = MenuItemImage::create( "options-button.png", "CloseNormal.png", CC_CALLBACK_1( MainMenu::GoToLevelSetter, this ) );
+    auto playItem1 = MenuItemImage::create( "options-button.png", "", CC_CALLBACK_1( MainMenu::GoToLevelSetter, this ) );
     playItem1->setPosition( Vec2( visibleSize.width / 2 + origin.x + 15, visibleSize.height / 2 + origin.y -50 +30) );
     playItem1->setScale(1.5);
     auto menuPlay1 = Menu::create( playItem1, NULL );
@@ -125,12 +125,20 @@ bool MainMenu::init() {
     this->addChild( menuPlay1, 3 );
 
     // Quit
-    auto playItem2 = MenuItemImage::create( "quit-button.png", "CloseNormal.png", CC_CALLBACK_1( MainMenu::menuCloseCallback, this ) );
+    auto playItem2 = MenuItemImage::create( "quit-button.png", "", CC_CALLBACK_1( MainMenu::menuCloseCallback, this ) );
     playItem2->setPosition( Vec2( visibleSize.width / 2 + origin.x + 15, visibleSize.height / 2 + origin.y -100 +30) );
     playItem2->setScale(1.5);
     auto menuPlay2 = Menu::create( playItem2, NULL );
     menuPlay2->setPosition( Point::ZERO );
     this->addChild( menuPlay2, 4 );
+
+    // Help
+    auto helpItem = MenuItemImage::create( "help.png", "CloseNormal.png", CC_CALLBACK_1( MainMenu::GoToRulesScene, this ) );
+    helpItem->setPosition( Vec2( visibleSize.width + origin.x -helpItem->getContentSize().width + 5, visibleSize.height / 2 + origin.y -100 ) );
+    //playItem2->setScale(1.5);
+    auto helpmenu = Menu::create( helpItem, NULL );
+    helpmenu->setPosition( Point::ZERO );
+    this->addChild( helpmenu, 4 );
 
     return true;
 }
@@ -154,6 +162,13 @@ void MainMenu::GoToGameScene( cocos2d::Ref *sender )
 {
     //CocosDenshion::SimpleAudioEngine::sharedEngine()->stopBackgroundMusic();
     auto scene = CityScene::createScene();
+    Director::getInstance( )->replaceScene( TransitionFade::create( TRANSITION_TIME, scene ) );
+}
+
+void MainMenu::GoToRulesScene( cocos2d::Ref *sender )
+{
+    //CocosDenshion::SimpleAudioEngine::sharedEngine()->stopBackgroundMusic();
+    auto scene = GameRules::createScene();
     Director::getInstance( )->replaceScene( TransitionFade::create( TRANSITION_TIME, scene ) );
 }
 
