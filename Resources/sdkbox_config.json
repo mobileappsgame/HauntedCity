@@ -5,14 +5,16 @@
             "ads": {
                 "gameover": {
                     "type": "interstitial",
-                    "id": "ca-app-pub-7460553244032885/6906244653"
+                    "id": "ca-app-pub-7460553244032885/6906244653",
+                    "is_designed_for_families": true
                 },
                 "home": {
                     "width": 300,
                     "type": "banner",
                     "id": "ca-app-pub-7460553244032885/4088509625",
                     "alignment": "bottom_left",
-                    "height": 50
+                    "height": 50,
+                    "is_designed_for_families": true
                 }
             }
         },
