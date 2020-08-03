@@ -6,6 +6,7 @@
 #include "CityScene.h"
 #include "SimpleAudioEngine.h"
 #include "LevelSetter.h"
+#include "PluginAdMob/PluginAdMob.h"
 
 #define TRANSITION_TIME 0.5
 
@@ -14,6 +15,10 @@ int GameOverScene::highestLevel = 1; // Initialize static variable
 int GameOverScene::currentLevel = 1; // Initialize static variable
 
 USING_NS_CC;
+
+static std::string kHomeBanner = "home";
+static std::string kGameOverAd = "gameover";
+
 
 Scene* GameOverScene::createScene()
 {
@@ -120,14 +125,19 @@ bool GameOverScene::init() {
                                  origin.y + visibleSize.height/4 -10));
     this->addChild(gamemaxlevel, 2);
 
+    //sdkbox::PluginAdMob::setListener(new IMListener1());
+    sdkbox::PluginAdMob::show(kGameOverAd);
+
     return true;
 }
 
 void GameOverScene::GoToGameScene( cocos2d::Ref *sender )
 {
     CocosDenshion::SimpleAudioEngine::sharedEngine()->stopBackgroundMusic();
+    sdkbox::PluginAdMob::removeListener( );
     auto scene = CityScene::createScene();
     Director::getInstance( )->replaceScene( TransitionFade::create( TRANSITION_TIME, scene ) );
+
 }
 
 void GameOverScene::menuCloseCallback(CCObject* pSender)
@@ -141,6 +151,7 @@ void GameOverScene::menuCloseCallback(CCObject* pSender)
 
 void GameOverScene::GoToLevelSelect(CCObject* pSender)
 {
+    sdkbox::PluginAdMob::removeListener( );
     auto scene = LevelSetter::createScene();
     Director::getInstance( )->replaceScene( TransitionFade::create( TRANSITION_TIME, scene ) );
 }

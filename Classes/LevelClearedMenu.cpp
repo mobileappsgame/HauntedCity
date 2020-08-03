@@ -13,8 +13,11 @@
 #include "CityScene.h"
 #include "GameOverScene.h"
 #include "LevelSetter.h"
+#include "PluginAdMob/PluginAdMob.h"
 
 #define TRANSITION_TIME 0.5
+static std::string kHomeBanner = "home";
+static std::string kGameOverAd = "gameover";
 
 USING_NS_CC;
 
@@ -131,6 +134,7 @@ bool LevelClearedMenu::init() {
 
 
 */
+    sdkbox::PluginAdMob::show(kGameOverAd);
     return true;
 }
 

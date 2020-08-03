@@ -21,4 +21,6 @@ public:
     void GoToLevelSelect(cocos2d::CCObject* pSender);
 };
 
+
+
 #endif //PROJ_ANDROID_GAMEOVERSCENE_H
