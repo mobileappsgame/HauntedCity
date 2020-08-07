@@ -13,6 +13,7 @@
 #include "CityScene.h"
 #include "GameOverScene.h"
 #include "LevelSetter.h"
+#include "MainMenu.h"
 #include "PluginAdMob/PluginAdMob.h"
 
 #define TRANSITION_TIME 0.5
@@ -60,10 +61,10 @@ bool LevelClearedMenu::init() {
     this->addChild(menu, 1);
 
     // Background Sprite
-    auto backgroundSprite = Sprite::create("level-select/level_cleared_screen.png");
+    auto backgroundSprite = Sprite::create("scary2.jpg");
     backgroundSprite->setPosition(origin.x + visibleSize.width / 2,
                                   origin.y + visibleSize.height / 2);
-    backgroundSprite->setScale(0.8);
+    backgroundSprite->setScale(2 * MainMenu::scaleFactor);
     this->addChild(backgroundSprite, 0);
 
     auto userdefaults = cocos2d::UserDefault::getInstance();
@@ -97,31 +98,28 @@ bool LevelClearedMenu::init() {
 
 
     // Settings menu
-    auto settingsItem = MenuItemImage::create( "level-select/settings-level.png", "CloseNormal.png", CC_CALLBACK_1( LevelClearedMenu::GoToLevelSetter, this ) );
-    settingsItem->setPosition( Vec2( origin.x + 165, visibleSize.height/2 + origin.y -108 ) );
+    auto playItem1 = MenuItemImage::create( "level-select/settings-level.png", "", CC_CALLBACK_1( LevelClearedMenu::GoToLevelSetter, this ) );
+    playItem1->setPosition( Vec2( visibleSize.width / 2 + origin.x - 120, visibleSize.height / 2 + origin.y -150) );
+    auto menuPlay1 = Menu::create( playItem1, NULL );
+    menuPlay1->setScale(0.5 * MainMenu::scaleFactor);
+    menuPlay1->setPosition( Point::ZERO );
+    this->addChild( menuPlay1, 2 );
 
-    auto settingsPlay = Menu::create( settingsItem, NULL );
-    settingsPlay->setPosition( Point::ZERO );
-    settingsPlay->setScale(0.8);
-    this->addChild( settingsPlay, 2 );
+    // Re-try same level
+    auto playItem2 = MenuItemImage::create( "level-select/retry-level.png", "", CC_CALLBACK_1( LevelClearedMenu::RetrySameLevel, this ) );
+    playItem2->setPosition( Vec2( visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y -150) );
+    auto menuPlay2 = Menu::create( playItem2, NULL );
+    menuPlay2->setScale(0.5 * MainMenu::scaleFactor);
+    menuPlay2->setPosition( Point::ZERO );
+    this->addChild( menuPlay2, 2 );
 
-    // Re-try menu at same level
-    auto retryLevelItem = MenuItemImage::create( "level-select/retry-level.png", "CloseNormal.png", CC_CALLBACK_1( LevelClearedMenu::RetrySameLevel, this ) );
-    retryLevelItem->setPosition( Vec2( origin.x + 162 + settingsItem->getContentSize().width + 20, visibleSize.height/2 + origin.y -108 ) );
-
-    auto retryLevelPlay = Menu::create( retryLevelItem, NULL );
-    retryLevelPlay->setPosition( Point::ZERO );
-    retryLevelPlay->setScale(0.8);
-    this->addChild( retryLevelPlay, 2 );
-
-    // Jump to next cleared level
-    auto nextLevelItem = MenuItemImage::create( "level-select/next-level.png", "CloseNormal.png", CC_CALLBACK_1( LevelClearedMenu::GoToNextLevel, this ) );
-    nextLevelItem->setPosition( Vec2( origin.x + 165 + settingsItem->getContentSize().width + 20 + retryLevelItem->getContentSize().width + 12, visibleSize.height/2 + origin.y -108 ) );
-    nextLevelItem->setScale(0.7);
-    auto nextLevelPlay = Menu::create( nextLevelItem, NULL );
-    nextLevelPlay->setPosition( Point::ZERO );
-    nextLevelPlay->setScale(0.8);
-    this->addChild( nextLevelPlay, 2 );
+    // Next level
+    auto playItem3 = MenuItemImage::create( "level-select/next-level.png", "", CC_CALLBACK_1( LevelClearedMenu::GoToNextLevel, this ) );
+    playItem3->setPosition( Vec2( visibleSize.width / 2 + origin.x + 120, visibleSize.height / 2 + origin.y -150) );
+    auto menuPlay3 = Menu::create( playItem3, NULL );
+    menuPlay3->setScale(0.5 * MainMenu::scaleFactor);
+    menuPlay3->setPosition( Point::ZERO );
+    this->addChild( menuPlay3, 2 );
 
 
 /*

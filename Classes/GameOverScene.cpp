@@ -6,6 +6,7 @@
 #include "CityScene.h"
 #include "SimpleAudioEngine.h"
 #include "LevelSetter.h"
+#include "MainMenu.h"
 #include "PluginAdMob/PluginAdMob.h"
 
 #define TRANSITION_TIME 0.5
@@ -54,14 +55,14 @@ bool GameOverScene::init() {
     auto gameover = Sprite::create("gameover/gameover1.png");
     gameover->setPosition(origin.x + visibleSize.width / 2,
                                   origin.y + visibleSize.height/2 + 60);
-    gameover->setScale(0.3);
+    gameover->setScale(0.3 * MainMenu::scaleFactor);
     this->addChild(gameover, 1);
 
     // retry menu
     auto playItem1 = MenuItemImage::create( "gameover/retry.png", "", CC_CALLBACK_1( GameOverScene::GoToGameScene, this ) );
     playItem1->setPosition( Vec2( visibleSize.width / 2 + origin.x - 120, visibleSize.height / 2 + origin.y -45) );
     auto menuPlay1 = Menu::create( playItem1, NULL );
-    menuPlay1->setScale(0.5);
+    menuPlay1->setScale(0.5 * MainMenu::scaleFactor);
     menuPlay1->setPosition( Point::ZERO );
     this->addChild( menuPlay1, 2 );
 
@@ -69,7 +70,7 @@ bool GameOverScene::init() {
     auto playItem2 = MenuItemImage::create( "gameover/settings.png", "", CC_CALLBACK_1( GameOverScene::GoToLevelSelect, this ) );
     playItem2->setPosition( Vec2( visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y -45) );
     auto menuPlay2 = Menu::create( playItem2, NULL );
-    menuPlay2->setScale(0.5);
+    menuPlay2->setScale(0.5 * MainMenu::scaleFactor);
     menuPlay2->setPosition( Point::ZERO );
     this->addChild( menuPlay2, 2 );
 
@@ -77,7 +78,7 @@ bool GameOverScene::init() {
     auto playItem3 = MenuItemImage::create( "gameover/exit.png", "", CC_CALLBACK_1( GameOverScene::menuCloseCallback, this ) );
     playItem3->setPosition( Vec2( visibleSize.width / 2 + origin.x + 120, visibleSize.height / 2 + origin.y -45) );
     auto menuPlay3 = Menu::create( playItem3, NULL );
-    menuPlay3->setScale(0.5);
+    menuPlay3->setScale(0.5 * MainMenu::scaleFactor);
     menuPlay3->setPosition( Point::ZERO );
     this->addChild( menuPlay3, 2 );
 
@@ -134,7 +135,7 @@ bool GameOverScene::init() {
 void GameOverScene::GoToGameScene( cocos2d::Ref *sender )
 {
     CocosDenshion::SimpleAudioEngine::sharedEngine()->stopBackgroundMusic();
-    sdkbox::PluginAdMob::removeListener( );
+    //sdkbox::PluginAdMob::removeListener( );
     auto scene = CityScene::createScene();
     Director::getInstance( )->replaceScene( TransitionFade::create( TRANSITION_TIME, scene ) );
 
@@ -151,7 +152,7 @@ void GameOverScene::menuCloseCallback(CCObject* pSender)
 
 void GameOverScene::GoToLevelSelect(CCObject* pSender)
 {
-    sdkbox::PluginAdMob::removeListener( );
+    //sdkbox::PluginAdMob::removeListener( );
     auto scene = LevelSetter::createScene();
     Director::getInstance( )->replaceScene( TransitionFade::create( TRANSITION_TIME, scene ) );
 }

@@ -16,6 +16,10 @@ static std::string kHomeBanner = "home";
 static std::string kGameOverAd = "gameover";
 static std::string kRewardedAd = "rewarded";
 
+float MainMenu::myScreenHeight = 0.0f;
+float MainMenu::myScreenWidth = 0.0f;
+float MainMenu::scaleFactor = 1.0f;
+
 class IMListener : public sdkbox::AdMobListener {
 public:
     virtual void adViewDidReceiveAd(const std::string &name) {
@@ -76,6 +80,24 @@ bool MainMenu::init() {
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
+    //CCLOG("****************  Width Visible size = %f ***************", visibleSize.width);
+    //CCLOG("****************  Width Visible Height = %f ***************", visibleSize.height);
+
+    auto director = cocos2d::Director::getInstance();
+    myScreenWidth = cocos2d::Size(director->getOpenGLView()->getFrameSize()).width;
+    myScreenHeight = cocos2d::Size(director->getOpenGLView()->getFrameSize()).height;
+
+    CCLOG("**************** screen width: %f", myScreenWidth);
+    CCLOG("**************** screen height: %f", myScreenHeight);
+
+    if (myScreenWidth > 1550)
+    {
+        scaleFactor = 1.5f;
+    }
+
+
+
+
     //SDK Box call
     //sdkbox::PluginSdkboxAds::playAd("InterstitialAd","");
 
@@ -85,7 +107,7 @@ bool MainMenu::init() {
     sdkbox::PluginAdMob::show("home");
     sdkbox::PluginAdMob::show("gameover");
      */
-    sdkbox::PluginAdMob::setListener(new IMListener());
+     sdkbox::PluginAdMob::setListener(new IMListener());
     //schedule(schedule_selector(MainMenu::update));
 
     //return true;
@@ -111,7 +133,7 @@ bool MainMenu::init() {
     // Play menu
     auto playItem = MenuItemImage::create( "play-button.png", "", CC_CALLBACK_1( MainMenu::GoToGameScene, this ) );
     playItem->setPosition( Vec2( visibleSize.width / 2 + origin.x + 15, visibleSize.height / 2 + origin.y +30) );
-    playItem->setScale(1.5);
+    playItem->setScale(1.5 * MainMenu::scaleFactor);
     auto menuPlay = Menu::create( playItem, NULL );
     menuPlay->setPosition( Point::ZERO );
     this->addChild( menuPlay, 5 );
@@ -119,7 +141,7 @@ bool MainMenu::init() {
     // Options menu
     auto playItem1 = MenuItemImage::create( "options-button.png", "", CC_CALLBACK_1( MainMenu::GoToLevelSetter, this ) );
     playItem1->setPosition( Vec2( visibleSize.width / 2 + origin.x + 15, visibleSize.height / 2 + origin.y -50 +30) );
-    playItem1->setScale(1.5);
+    playItem1->setScale(1.5 * MainMenu::scaleFactor);
     auto menuPlay1 = Menu::create( playItem1, NULL );
     menuPlay1->setPosition( Point::ZERO );
     this->addChild( menuPlay1, 3 );
@@ -127,7 +149,7 @@ bool MainMenu::init() {
     // Quit
     auto playItem2 = MenuItemImage::create( "quit-button.png", "", CC_CALLBACK_1( MainMenu::menuCloseCallback, this ) );
     playItem2->setPosition( Vec2( visibleSize.width / 2 + origin.x + 15, visibleSize.height / 2 + origin.y -100 +30) );
-    playItem2->setScale(1.5);
+    playItem2->setScale(1.5 * MainMenu::scaleFactor);
     auto menuPlay2 = Menu::create( playItem2, NULL );
     menuPlay2->setPosition( Point::ZERO );
     this->addChild( menuPlay2, 4 );
@@ -139,6 +161,8 @@ bool MainMenu::init() {
     auto helpmenu = Menu::create( helpItem, NULL );
     helpmenu->setPosition( Point::ZERO );
     this->addChild( helpmenu, 4 );
+
+
 
     return true;
 }
@@ -177,6 +201,6 @@ void MainMenu::update(float dt)
     //sdkbox::PluginAdMob::cache("home");
     //sdkbox::PluginAdMob::cache("gameover");
 
-    sdkbox::PluginAdMob::show("home");
+    //sdkbox::PluginAdMob::show("home");
     //sdkbox::PluginAdMob::show("gameover");
 }

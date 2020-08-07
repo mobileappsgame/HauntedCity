@@ -3,6 +3,7 @@
 //
 
 #include "ScrollingBg.h"
+#include "MainMenu.h"
 
 ScrollingBg* ScrollingBg::create(string _name, float _speed, float _xpos, float _yPos)
 {
@@ -24,12 +25,14 @@ bool ScrollingBg::initScrollingBg(string _name, float _speed, float _xpos, float
     winSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
+
+
     speed = _speed;
 
     gameBg1 = CCSprite::create(_name.c_str());
 
     gameBg1->setPosition(Vec2(origin.x + winSize.width * _xpos, origin.y + winSize.height * _yPos));
-    //gameBg1->setScale(2.0f);
+    gameBg1->setScale(1.0f * MainMenu::scaleFactor);
     //gameBg1->setScaleY(2.0f);
     gameBg1->setAnchorPoint(Vec2(0.5,0.5));
 
@@ -37,7 +40,7 @@ bool ScrollingBg::initScrollingBg(string _name, float _speed, float _xpos, float
 
     gameBg2 = CCSprite::create(_name.c_str());
     gameBg2->setPosition(Vec2(origin.x + winSize.width * _xpos + winSize.width , origin.y + winSize.height * _yPos));
-    //gameBg2->setScale(2.0f);
+    gameBg2->setScale(1.0f * MainMenu::scaleFactor);
     //gameBg2->setScaleY(2.0f);
     gameBg2->setAnchorPoint(Vec2(0.5,0.5));
 

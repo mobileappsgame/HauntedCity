@@ -19,6 +19,8 @@ public:
     void GoToLevelSetter( cocos2d::Ref *sender );
     void GoToGameScene( cocos2d::Ref *sender );
     void update(float dt);
+
+    static float myScreenHeight, myScreenWidth, scaleFactor;
 };
 
 #endif //PROJ_ANDROID_MAINMENU_H

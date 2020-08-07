@@ -15,6 +15,7 @@
 #include "LevelClearedMenu.h"
 #include "../cocos2d/cocos/math/Vec2.h"
 #include "../cocos2d/cocos/base/CCRef.h"
+#include "MainMenu.h"
 
 #define TRANSITION_TIME 0.5
 
@@ -127,10 +128,10 @@ bool CityScene::init()
     // Parallax scrolling layers below with different speed
 
     if (GameOverScene::currentLevel == 1) {
-        city = ScrollingBg::create("background/city1.png", 4.0, 0.5, 0.7);
+        city = ScrollingBg::create("background/city2.png", 4.0, 0.5, 0.7);
     }
     else if (GameOverScene::currentLevel == 2) {
-        city = ScrollingBg::create("background/city2.png", 4.0, 0.5, 0.7);
+        city = ScrollingBg::create("background/city1.png", 4.0, 0.5, 0.7);
     }
     else if (GameOverScene::currentLevel == 3) {
         city = ScrollingBg::create("background/city3.png", 4.0, 0.5, 0.7);
@@ -176,7 +177,15 @@ bool CityScene::init()
     SpriteFrameCache::getInstance()->addSpriteFramesWithFile("running.plist");
     auto frames = getAnimation("Run__00%d.png", 6);
     sprite3 = Sprite::createWithSpriteFrame(frames.front());
-    sprite3->setPosition(Vec2(origin.x + visibleSize.width/3 -3, origin.y + visibleSize.height/3 -3));
+    sprite3->setScale(1.0f * MainMenu::scaleFactor);
+    if (MainMenu::scaleFactor == 1.5f)
+    {
+        sprite3->setPosition(Vec2(origin.x + visibleSize.width/3 -3, origin.y + visibleSize.height/3 -3));
+    }
+    else {
+        sprite3->setPosition(Vec2(origin.x + visibleSize.width/3 -3, origin.y + visibleSize.height/3));
+    }
+
 
     sprite3->setTag(10);
     initializePhysics(sprite3);
@@ -207,7 +216,8 @@ bool CityScene::init()
 void CityScene::update(float dt)
 {
     city->update(0.1);
-    if (coinsCollected == 6) // Certain number of coins to be collected to clear each level
+    if (coinsCollected == 10) // Certain number of coins to be collected to clear each level
+    //if (SCORE == 0)
     {
         coinsCollected = 0; // Re-set counter. Not required actually, since we are doing it at entry.
         auto scene = LevelClearedMenu::createScene();
@@ -283,6 +293,7 @@ void CityScene::addJewels(float dt) {
 
     Sprite* jewels;
     jewels = Sprite::create("gold-coin.png");
+    jewels->setScale(1.0f * MainMenu::scaleFactor);
 
     // 1
     auto monsterContentSize = jewels->getContentSize();
@@ -290,6 +301,7 @@ void CityScene::addJewels(float dt) {
 
     jewels->setPosition(Vec2(CCRANDOM_0_1() * 10 * selfContentSize.width + monsterContentSize.width / 2 + 5,
                              visibleSize.height / 4 - 1));
+
 
     initializePhysics(jewels);
 
@@ -318,10 +330,11 @@ void CityScene::addStones(float dt) {
         if ((random % 3) == 0) {
             if (GameOverScene::currentLevel > 3) {
                 stones = Sprite::create("spikeB1.png");
-                stones->setScaleY(1.8);
+                stones->setScaleY(1.8 * MainMenu::scaleFactor);
             }
             else {
                 stones = Sprite::create("spikeB1.png");
+                stones->setScaleY(1.8 * MainMenu::scaleFactor);
             }
         }
         else {
@@ -331,15 +344,18 @@ void CityScene::addStones(float dt) {
                 }
                 else {
                     stones = Sprite::create("boulder.png");
+                    stones->setScale(1.0f * MainMenu::scaleFactor);
                 }
             }
             else {
                 stones = Sprite::create("boulder.png");
+                stones->setScale(1.0f * MainMenu::scaleFactor);
             }
         }
     }
     else {
         stones = Sprite::create("boulder.png");
+        stones->setScale(1.0f * MainMenu::scaleFactor);
     }
 
     // 1
@@ -384,6 +400,7 @@ void CityScene::addSkulls(float dt)
     {
         skull = cocos2d::Sprite::create("skull2.png");
         skull -> setAnchorPoint(cocos2d::Vec2::ZERO);
+        skull->setScale(1.0 * MainMenu::scaleFactor);
         skull -> setPosition(CCRANDOM_0_1() * visibleSize.width , visibleSize.height);
         initializePhysics(skull);
         //skull ->getPhysicsBody()->setVelocity(cocos2d::Vec2(10, ( (CCRANDOM_0_1() + 0.02f) * -150) ));
@@ -408,7 +425,7 @@ void CityScene::shootArrows(float dt) {
 
 
     arrows = Sprite::create("arrow.png");
-    arrows->setScaleX(0.5);
+    arrows->setScaleX(0.5 * MainMenu::scaleFactor);
     arrows->setTag(10);
 
 
@@ -476,7 +493,7 @@ bool CityScene::onContactBegan(PhysicsContact &contact) {
     {
         SCORE +=5; // Skull hit is a plus - increment bonus score
         scoreLabel->setString("SCORE: " + std::to_string(SCORE));
-        generateSpark();
+        //generateSpark();
         CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("collect-coin.ogg");
     }
 
@@ -516,7 +533,7 @@ void CityScene::initializePhysics(Sprite* sprite)
     auto circle = PhysicsBody::createCircle(sprite -> getContentSize().width/2);
     if (sprite->getTag() == 10) // It is an arrow, set box Physics body
     {
-        circle = PhysicsBody::createBox(Size(sprite -> getContentSize().width/2, sprite -> getContentSize().height/2),
+        circle = PhysicsBody::createBox(Size(sprite -> getContentSize().width -40, sprite -> getContentSize().height - 10),
                                              PhysicsMaterial(0, 0, 0));
     }
 
