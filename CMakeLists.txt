@@ -31,6 +31,7 @@ list(APPEND GAME_SOURCE
      Classes/GameOverScene.cpp
      Classes/LevelSetter.cpp
      Classes/LevelClearedMenu.cpp
+     Classes/GameRules.cpp
      )
 list(APPEND GAME_HEADER
      Classes/AppDelegate.h
@@ -40,6 +41,7 @@ list(APPEND GAME_HEADER
      Classes/GameOverScene.h
      Classes/LevelSetter.h
      Classes/LevelClearedMenu.h
+     Classes/GameRules.h
      )
 
 if(ANDROID)
